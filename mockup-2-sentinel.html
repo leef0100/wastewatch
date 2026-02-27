@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWatch — Sentinel Theme (Authoritative Institutional)</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --white: #ffffff;
+    --ink: #0c1222;
+    --ink-soft: #3b4559;
+    --ink-muted: #6b7a8d;
+    --border: #d8dde6;
+    --border-strong: #b0b8c4;
+    --navy: #0a2540;
+    --navy-light: #1a3a5c;
+    --accent: #0066cc;
+    --red: #c4161c;
+    --red-bg: #fef2f2;
+    --green: #0a7b3e;
+    --green-bg: #f0fdf4;
+    --gold: #92610a;
+    --gold-bg: #fefce8;
+    --stripe: #f1f3f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Source Sans 3', -apple-system, sans-serif; }
+  .serif { font-family: 'Merriweather', Georgia, serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Official banner */
+  .official-banner { background: var(--navy); color: #fff; font-size: 12px; padding: 6px 32px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+
+  /* Header */
+  header { background: var(--white); border-bottom: 3px solid var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; }
+  .header-logo { display: flex; align-items: center; gap: 12px; }
+  .header-logo-mark { width: 36px; height: 36px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; letter-spacing: -0.5px; }
+  .header-logo-text { line-height: 1.2; }
+  .header-logo-name { font-size: 17px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; }
+  .header-logo-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); font-weight: 600; }
+  .header-nav { display: flex; gap: 24px; }
+  .header-nav a { font-size: 14px; color: var(--ink-soft); text-decoration: none; font-weight: 400; padding-bottom: 2px; transition: all 0.2s; }
+  .header-nav a.active { font-weight: 600; color: var(--navy); border-bottom: 2px solid var(--navy); }
+  .header-nav a:hover { color: var(--navy); }
+  .header-actions { display: flex; gap: 8px; }
+
+  /* Buttons */
+  .btn { padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 3px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .btn-navy { background: var(--navy); color: #fff; border: none; font-weight: 600; }
+  .btn-navy:hover { background: #0d2f50; }
+  .btn-outline { background: transparent; color: var(--ink-soft); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--border-strong); color: var(--ink); }
+  .btn-white { background: #fff; color: var(--navy); border: none; font-weight: 600; }
+  .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+  /* Tag */
+  .tag { display: inline-block; padding: 2px 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; border-radius: 2px; }
+
+  /* Hero */
+  .hero { background: var(--navy); color: #fff; padding: 64px 32px 56px; position: relative; overflow: hidden; }
+  .hero-content { max-width: 640px; position: relative; z-index: 2; }
+  .hero h1 { font-size: 42px; font-weight: 700; line-height: 1.15; letter-spacing: -0.5px; margin-top: 16px; margin-bottom: 16px; }
+  .hero p { font-size: 17px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 540px; margin-bottom: 28px; }
+  .hero-actions { display: flex; gap: 12px; align-items: center; }
+  .hero-stats { position: absolute; right: 32px; top: 64px; display: flex; flex-direction: column; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); width: 260px; z-index: 2; }
+  .hero-stat { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .hero-stat:last-child { border-bottom: none; }
+  .hero-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.45); margin-bottom: 2px; }
+  .hero-stat-value { font-size: 24px; font-weight: 700; }
+
+  /* Dashboard preview */
+  .dashboard-preview { padding: 48px 32px; max-width: 1200px; margin: 0 auto; }
+  .dashboard { display: flex; border: 1px solid var(--border); background: var(--white); box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+
+  /* Sidebar */
+  .sidebar { width: 200px; background: var(--navy); padding: 16px 0; flex-shrink: 0; }
+  .sidebar-section { padding: 0 16px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; font-size: 13px; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; color: rgba(255,255,255,0.55); }
+  .sidebar-item.active { background: rgba(255,255,255,0.08); border-left-color: #fff; color: #fff; font-weight: 600; }
+  .sidebar-item:hover { color: rgba(255,255,255,0.85); }
+  .sidebar-icon { font-size: 14px; width: 18px; text-align: center; }
+  .sidebar-count { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 2px; }
+
+  /* Main content */
+  .main { flex: 1; }
+  .breadcrumb { padding: 10px 20px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--ink-muted); display: flex; justify-content: space-between; }
+  .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .metric { padding: 20px 24px; border-right: 1px solid var(--border); }
+  .metric:last-child { border-right: none; }
+  .metric-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-muted); margin-bottom: 4px; }
+  .metric-value { font-size: 32px; font-weight: 700; line-height: 1.1; }
+  .metric-change { font-size: 12px; font-weight: 500; margin-top: 2px; }
+  .metric-change.up { color: var(--red); }
+  .metric-change.down { color: var(--green); }
+
+  /* Table */
+  .table-header { padding: 12px 20px 8px; font-size: 12px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.5px; border-top: 1px solid var(--border); }
+  .table-row { display: grid; grid-template-columns: 2.5fr 1fr 1fr 70px 70px; padding: 10px 20px; font-size: 13px; border-bottom: 1px solid var(--border); align-items: center; }
+  .table-row.header { font-size: 10px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.8px; background: var(--stripe); }
+  .table-row.striped { background: var(--stripe); }
+  .severity-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .severity-crit { background: var(--red-bg); color: var(--red); }
+  .severity-high { background: #fef3c7; color: #92400e; }
+  .severity-med { background: #f0f9ff; color: #0369a1; }
+
+  /* How it works */
+  .how-section { padding: 48px 32px; background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .how-inner { max-width: 1000px; margin: 0 auto; }
+  .how-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 32px; }
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .how-step { padding: 24px 28px; border-left: 1px solid var(--border); }
+  .how-step:first-child { border-left: none; }
+  .how-number { font-size: 32px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .how-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .how-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Compliance */
+  .compliance { padding: 40px 32px; display: flex; justify-content: center; gap: 40px; align-items: center; }
+  .compliance-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .compliance-icon { font-size: 18px; }
+
+  /* CTA */
+  .cta { background: var(--navy); padding: 56px 32px; text-align: center; }
+  .cta h2 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .cta p { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 24px; }
+
+  /* Footer */
+  footer { padding: 20px 32px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-muted); }
+  footer .links { display: flex; gap: 16px; }
+  footer .links a { color: var(--ink-muted); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .hero-stats { display: none; }
+    .sidebar { display: none; }
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .how-grid { grid-template-columns: 1fr; }
+    .how-step { border-left: none; border-top: 1px solid var(--border); }
+    .how-step:first-child { border-top: none; }
+    .table-row { grid-template-columns: 2fr 1fr 1fr; }
+    .table-row span:nth-child(4), .table-row span:nth-child(5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Official banner -->
+<div class="official-banner">
+  &#128737; An official government-grade analysis platform — WasteWatch.gov
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-logo">
+    <div class="header-logo-mark">WW</div>
+    <div class="header-logo-text">
+      <div class="header-logo-name">WasteWatch</div>
+      <div class="header-logo-sub">Fraud Detection Platform</div>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <a href="#" class="active">Platform</a>
+    <a href="#">How It Works</a>
+    <a href="#">Compliance</a>
+    <a href="#">Pricing</a>
+    <a href="#">Contact</a>
+  </nav>
+  <div class="header-actions">
+    <a class="btn btn-outline" href="#">Sign In</a>
+    <a class="btn btn-navy" href="#">Request Access</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="tag" style="color:#93c5fd;background:rgba(147,197,253,0.1);">Trusted by 42 Federal Agencies</span>
+    <h1 class="serif">Identify fraud, waste, and abuse in public spending</h1>
+    <p>Statistical forensics platform for government auditors. Upload spending data, detect anomalies with Benford's Law analysis, and generate compliance-ready reports.</p>
+    <div class="hero-actions">
+      <a class="btn btn-white" href="#">Upload Data &rarr;</a>
+      <a class="btn btn-ghost" href="#">View Demo</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-label">Data Analyzed</div>
+      <div class="hero-stat-value mono" style="color:#93c5fd">$4.2B</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Fraud Found</div>
+      <div class="hero-stat-value mono" style="color:#fca5a5">$187M</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Avg Detection</div>
+      <div class="hero-stat-value mono" style="color:#86efac">&lt; 60s</div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Preview -->
+<section class="dashboard-preview">
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">Navigation</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">&#9673;</span> Command Center</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9873;</span> Red Flags <span class="sidebar-count">12</span></div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9678;</span> Investigations</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9638;</span> Departments</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9672;</span> Vendors</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9636;</span> Reports</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="breadcrumb">
+        <span>Command Center / FY2025-Q4</span>
+        <span>Last updated: 2 min ago</span>
+      </div>
+      <div class="metrics-row">
+        <div class="metric">
+          <div class="metric-label">Total Spend</div>
+          <div class="metric-value mono">$847M</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Waste Detected</div>
+          <div class="metric-value mono" style="color:var(--red)">$12.3M</div>
+          <div class="metric-change up">&#9650; +18% vs Q3</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Savings Identified</div>
+          <div class="metric-value mono" style="color:var(--green)">$8.7M</div>
+          <div class="metric-change down">&#9660; +23% vs Q3</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Active Flags</div>
+          <div class="metric-value mono" style="color:var(--gold)">127</div>
+        </div>
+      </div>
+      <div class="table-header">Highest Risk Vendors</div>
+      <div class="table-row header">
+        <span>Vendor</span><span>Total Paid</span><span>Transactions</span><span>Risk</span><span>Flags</span>
+      </div>
+      <div class="table-row striped">
+        <span>Meridian Consulting LLC</span><span class="mono">$4,231,800</span><span class="mono">847</span><span><span class="severity-badge severity-crit">CRIT</span></span><span>&#9679;&#9679;&#9679;</span>
+      </div>
+      <div class="table-row">
+        <span>Pacific Supply Co.</span><span class="mono">$2,890,100</span><span class="mono">423</span><span><span class="severity-badge severity-high">HIGH</span></span><span>&#9679;&#9679;</span>
+      </div>
+      <div class="table-row striped">
+        <span>Northern Services Group</span><span class="mono">$1,567,000</span><span class="mono">312</span><span><span class="severity-badge severity-high">HIGH</span></span><span>&#9679;&#9679;</span>
+      </div>
+      <div class="table-row">
+        <span>Atlas Procurement Inc.</span><span class="mono">$987,400</span><span class="mono">156</span><span><span class="severity-badge severity-med">MED</span></span><span>&#9679;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section">
+  <div class="how-inner">
+    <h2 class="serif">How It Works</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-number mono">01</div>
+        <div class="how-title">Upload</div>
+        <div class="how-desc">CSV or XLSX spending data. No preprocessing required. PII is never stored.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-number mono">02</div>
+        <div class="how-title">Analyze</div>
+        <div class="how-desc">Benford's Law, Z-score anomaly detection, and multi-factor risk scoring run automatically.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-number mono">03</div>
+        <div class="how-title">Report</div>
+        <div class="how-desc">Compliance-ready PDF reports with evidence chains, flag explanations, and recommended actions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Compliance -->
+<section class="compliance">
+  <div class="compliance-badge"><span class="compliance-icon">&#128274;</span> SOC 2 Type II</div>
+  <div class="compliance-badge"><span class="compliance-icon">&#127963;</span> FedRAMP Ready</div>
+  <div class="compliance-badge"><span class="compliance-icon">&#9855;</span> WCAG 2.1 AA</div>
+  <div class="compliance-badge"><span class="compliance-icon">&#128737;</span> AES-256 Encrypted</div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2 class="serif">Request a platform demo</h2>
+  <p>See how WasteWatch detected $187M in fraud across 42 agencies.</p>
+  <a class="btn btn-white" style="padding:12px 32px;font-size:15px;" href="#">Schedule Demo &rarr;</a>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>&copy; 2026 WasteWatch — Government-Grade Fraud Detection &amp; Waste Analysis</span>
+  <div class="links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms</a>
+    <a href="#">Accessibility</a>
+  </div>
+</footer>
+
+</body>
+</html>

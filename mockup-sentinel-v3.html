@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWatch — Sentinel V3 (Cinematic Data)</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --white: #ffffff;
+    --ink: #111827;
+    --ink-soft: #374151;
+    --ink-muted: #6b7280;
+    --border: #d1d5db;
+    --border-light: #e5e7eb;
+    --navy: #0f172a;
+    --navy-mid: #1e293b;
+    --steel: #334155;
+    --accent: #2563eb;
+    --accent-bright: #3b82f6;
+    --accent-bg: #eff6ff;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --red-glow: rgba(220,38,38,0.08);
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --stripe: #f9fafb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Source Sans 3', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .serif { font-family: 'Merriweather', Georgia, serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes drawLine { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+  @keyframes barRise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes ripple {
+    0% { box-shadow: 0 0 0 0 rgba(37,99,235,0.2); }
+    70% { box-shadow: 0 0 0 10px rgba(37,99,235,0); }
+    100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes countFlip {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-100%); opacity: 0; }
+    51% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .anim-fu { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-si { animation: scaleIn 0.5s ease-out both; }
+  .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.24s; }
+  .d4 { animation-delay: 0.32s; } .d5 { animation-delay: 0.4s; } .d6 { animation-delay: 0.48s; }
+
+  /* ===== OFFICIAL BANNER ===== */
+  .banner {
+    background: var(--navy); color: rgba(255,255,255,0.8); font-size: 12px;
+    padding: 7px 0; font-weight: 500; overflow: hidden; position: relative;
+  }
+  .banner-inner { display: flex; align-items: center; gap: 8px; padding: 0 32px; }
+  .banner-shield {
+    width: 18px; height: 18px; border-radius: 4px;
+    background: rgba(255,255,255,0.08); display: flex;
+    align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0;
+  }
+  .banner-sep { margin: 0 12px; width: 1px; height: 12px; background: rgba(255,255,255,0.15); }
+  .banner-live { display: flex; align-items: center; gap: 5px; margin-left: auto; font-size: 11px; color: rgba(255,255,255,0.5); }
+  .banner-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; animation: pulse 2s ease-in-out infinite; }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--white); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px; position: sticky; top: 0; z-index: 50;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .h-logo { display: flex; align-items: center; gap: 10px; }
+  .h-logo-mark {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--navy); display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 800; letter-spacing: -0.5px;
+    position: relative; overflow: hidden;
+  }
+  .h-logo-mark::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1));
+  }
+  .h-logo-name { font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; }
+  .h-logo-sub { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-muted); font-weight: 600; }
+
+  .h-nav { display: flex; gap: 2px; }
+  .h-nav a {
+    font-size: 13px; color: var(--ink-muted); text-decoration: none; font-weight: 500;
+    padding: 6px 12px; border-radius: 6px; transition: all 0.15s;
+  }
+  .h-nav a:hover { background: var(--stripe); color: var(--ink-soft); }
+  .h-nav a.active { background: var(--navy); color: #fff; font-weight: 600; }
+
+  .h-actions { display: flex; gap: 6px; }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+    border-radius: 6px; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 5px; transition: all 0.2s ease; border: none;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 1px 2px rgba(37,99,235,0.3), 0 0 0 0 rgba(37,99,235,0.2);
+  }
+  .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,0.25); }
+  .btn-secondary {
+    background: var(--white); color: var(--ink-soft); border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-white { background: #fff; color: var(--navy); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .btn-white:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .btn-glass { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); }
+  .btn-glass:hover { background: rgba(255,255,255,0.12); }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: var(--navy); color: #fff; padding: 0; position: relative;
+    overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; min-height: 480px;
+  }
+  .hero-left { padding: 72px 48px 72px 32px; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
+  .hero-right {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+  }
+  /* Diagonal cut between sections */
+  .hero-right::before {
+    content: ''; position: absolute; top: 0; left: -40px; bottom: 0; width: 80px;
+    background: var(--navy); transform: skewX(-3deg); z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+    border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    width: fit-content;
+  }
+  .hero-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s ease-in-out infinite; }
+
+  .hero h1 {
+    font-size: 40px; font-weight: 700; line-height: 1.18; letter-spacing: -0.5px;
+    margin: 20px 0 16px; max-width: 500px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent-bright); }
+  .hero p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.65; max-width: 440px; margin-bottom: 28px; }
+  .hero-actions { display: flex; gap: 10px; }
+  .hero-trust {
+    display: flex; gap: 16px; margin-top: 32px; padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .hero-trust-item { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; }
+  .hero-trust-val { display: block; font-weight: 700; font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 1px; }
+
+  /* RIGHT PANEL — live data visualization */
+  .hero-viz {
+    position: relative; z-index: 2; padding: 40px 32px 40px 60px;
+    display: flex; flex-direction: column; gap: 16px; justify-content: center;
+  }
+  .viz-card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 18px 20px; backdrop-filter: blur(8px);
+    transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .viz-card:hover {
+    background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+  }
+  /* Subtle left accent */
+  .viz-card::before {
+    content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 2px;
+  }
+  .viz-card.card-red::before { background: var(--red); }
+  .viz-card.card-green::before { background: var(--green); }
+  .viz-card.card-blue::before { background: var(--accent-bright); }
+  .viz-card.card-amber::before { background: var(--amber); }
+
+  .viz-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.35); margin-bottom: 6px; font-weight: 600; }
+  .viz-row { display: flex; align-items: baseline; justify-content: space-between; }
+  .viz-value { font-size: 28px; font-weight: 700; }
+  .viz-chart { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+  .viz-bar { width: 6px; border-radius: 2px; transform-origin: bottom; animation: barRise 0.6s ease-out both; }
+
+  /* Benford mini chart */
+  .benford-chart { display: flex; align-items: flex-end; gap: 2px; height: 50px; margin-top: 8px; }
+  .benford-bar-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .benford-bar { width: 18px; border-radius: 3px 3px 0 0; transition: height 0.5s ease-out; transform-origin: bottom; animation: barRise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+  .benford-label { font-size: 9px; color: rgba(255,255,255,0.3); }
+  .benford-expected { border: 1px dashed rgba(255,255,255,0.15); background: transparent !important; }
+
+  .viz-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .viz-trend { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; }
+  .viz-link { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; }
+
+  /* ===== MARQUEE STRIP ===== */
+  .marquee-strip {
+    background: var(--white); border-bottom: 1px solid var(--border-light);
+    padding: 14px 0; overflow: hidden; position: relative;
+  }
+  .marquee-strip::before, .marquee-strip::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+  }
+  .marquee-strip::before { left: 0; background: linear-gradient(90deg, var(--white), transparent); }
+  .marquee-strip::after { right: 0; background: linear-gradient(270deg, var(--white), transparent); }
+  .marquee-track { display: flex; gap: 48px; animation: marquee 30s linear infinite; width: max-content; }
+  .marquee-item { font-size: 13px; font-weight: 600; color: var(--ink-muted); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+
+  /* ===== DASHBOARD ===== */
+  .dash-section { padding: 56px 32px; max-width: 1200px; margin: 0 auto; }
+  .dash-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px;
+    background: var(--accent-bg); padding: 4px 10px; border-radius: 4px;
+  }
+  .dash-title { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 24px; color: var(--ink); }
+
+  .dash-frame {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.04);
+  }
+
+  /* Tab bar inside dashboard */
+  .dash-tabs {
+    display: flex; align-items: center; padding: 0 20px;
+    border-bottom: 1px solid var(--border-light); background: var(--stripe);
+    height: 42px;
+  }
+  .dash-tab {
+    font-size: 12px; font-weight: 500; color: var(--ink-muted); padding: 10px 14px;
+    cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .dash-tab.active { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
+  .dash-tab .tab-badge {
+    display: inline-flex; margin-left: 4px; padding: 1px 5px; font-size: 10px;
+    background: var(--red); color: #fff; border-radius: 8px; font-weight: 700;
+  }
+  .dash-search {
+    margin-left: auto; display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--ink-muted); background: var(--white);
+    border: 1px solid var(--border-light); padding: 4px 10px; border-radius: 5px;
+  }
+
+  /* Metric cards */
+  .dash-metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border-light); }
+  .d-metric {
+    padding: 20px; border-right: 1px solid var(--border-light);
+    position: relative; transition: all 0.2s;
+  }
+  .d-metric:last-child { border-right: none; }
+  .d-metric:hover { background: var(--stripe); }
+  .d-metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-muted); margin-bottom: 6px; }
+  .d-metric-value { font-size: 28px; font-weight: 700; line-height: 1.1; margin-bottom: 4px; }
+  .d-metric-trend { font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 3px; }
+  .d-metric-trend.up { color: var(--red); }
+  .d-metric-trend.down { color: var(--green); }
+  .d-metric-sparkline {
+    display: flex; align-items: flex-end; gap: 2px; height: 20px; margin-top: 10px;
+  }
+  .spark { width: 5px; border-radius: 1px; transform-origin: bottom; }
+
+  /* Data table */
+  .d-table-bar {
+    padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border-light); background: var(--stripe);
+  }
+  .d-table-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-soft); }
+  .d-table-actions { display: flex; gap: 8px; }
+  .d-table-action { font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 600; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--accent-bg); background: var(--accent-bg); }
+
+  .d-row {
+    display: grid; grid-template-columns: 2.2fr 1fr 0.8fr 0.8fr 80px;
+    padding: 10px 20px; font-size: 13px; border-bottom: 1px solid var(--border-light);
+    align-items: center; transition: all 0.15s;
+  }
+  .d-row.head { font-size: 10px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.8px; background: var(--white); }
+  .d-row:not(.head):hover { background: var(--accent-bg); }
+  .d-row:nth-child(odd):not(.head) { background: var(--stripe); }
+  .d-row:nth-child(odd):not(.head):hover { background: var(--accent-bg); }
+  .d-vendor { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .d-vendor-icon {
+    width: 28px; height: 28px; border-radius: 6px; display: flex;
+    align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+    color: #fff; flex-shrink: 0;
+  }
+  .d-sev {
+    font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; text-align: center;
+  }
+  .d-sev-crit { background: var(--red-bg); color: var(--red); border: 1px solid rgba(220,38,38,0.1); }
+  .d-sev-high { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(217,119,6,0.1); }
+  .d-sev-med { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(37,99,235,0.1); }
+  .d-risk-bar { width: 48px; height: 6px; background: var(--border-light); border-radius: 3px; overflow: hidden; }
+  .d-risk-fill { height: 100%; border-radius: 3px; }
+
+  /* ===== HOW IT WORKS ===== */
+  .how { padding: 72px 32px; background: var(--white); border-top: 1px solid var(--border); }
+  .how-inner { max-width: 1000px; margin: 0 auto; }
+  .how h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 48px; }
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+  /* Connecting line */
+  .how-grid::before {
+    content: ''; position: absolute; top: 32px; left: 60px; right: 60px;
+    height: 1px; background: var(--border);
+    background-image: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 6px, transparent 6px, transparent 12px);
+  }
+  .how-card {
+    text-align: center; padding: 0 24px; position: relative;
+    transition: transform 0.2s;
+  }
+  .how-card:hover { transform: translateY(-4px); }
+  .how-num {
+    width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; position: relative; z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .how-card:hover .how-num { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .how-card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .how-card-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .how-badge {
+    display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 4px;
+  }
+
+  /* ===== COMPLIANCE ===== */
+  .compliance { padding: 48px 32px; background: var(--bg); }
+  .compliance-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .comp-badge {
+    display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+    background: var(--white); border: 1px solid var(--border-light);
+    border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .comp-badge:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(37,99,235,0.08); transform: translateY(-1px); }
+  .comp-icon { font-size: 16px; }
+
+  /* ===== CTA ===== */
+  .cta {
+    background: var(--navy); padding: 80px 32px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  /* Animated gradient background */
+  .cta::before {
+    content: ''; position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(37,99,235,0.1), transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%); pointer-events: none;
+  }
+  .cta-inner { position: relative; z-index: 2; }
+  .cta h2 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .cta p { color: rgba(255,255,255,0.5); font-size: 16px; margin-bottom: 32px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .cta-btns { display: flex; gap: 10px; justify-content: center; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 20px 32px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-muted);
+    background: var(--white);
+  }
+  footer .f-links { display: flex; gap: 16px; }
+  footer .f-links a { color: var(--ink-muted); text-decoration: none; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 48px 24px; }
+    .hero h1 { font-size: 30px; }
+    .dash-metrics { grid-template-columns: repeat(2, 1fr); }
+    .d-row { grid-template-columns: 2fr 1fr 80px; }
+    .d-row span:nth-child(3), .d-row span:nth-child(4) { display: none; }
+    .d-row.head span:nth-child(3), .d-row.head span:nth-child(4) { display: none; }
+    .how-grid { grid-template-columns: 1fr; gap: 32px; }
+    .how-grid::before { display: none; }
+    .marquee-strip { display: none; }
+    .h-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+  <div class="banner-inner">
+    <span class="banner-shield">&#9737;</span>
+    An official government-grade analysis platform — <strong>WasteWatch.gov</strong>
+    <span class="banner-sep"></span>
+    <span class="banner-live"><span class="banner-live-dot"></span> System operational</span>
+  </div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="h-logo">
+    <div class="h-logo-mark">WW</div>
+    <div>
+      <div class="h-logo-name">WasteWatch</div>
+      <div class="h-logo-sub">Fraud Detection</div>
+    </div>
+  </div>
+  <nav class="h-nav">
+    <a href="#" class="active">Platform</a>
+    <a href="#">How It Works</a>
+    <a href="#">Compliance</a>
+    <a href="#">Pricing</a>
+    <a href="#">Contact</a>
+  </nav>
+  <div class="h-actions">
+    <a class="btn btn-secondary" href="#">Sign In</a>
+    <a class="btn btn-primary" href="#">Request Access</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag anim-fu"><span class="hero-tag-dot"></span> Trusted by 42 Federal Agencies</div>
+    <h1 class="serif anim-fu d1">Identify fraud, waste, and abuse in <em>public spending</em></h1>
+    <p class="anim-fu d2">Statistical forensics for government auditors. Upload spending data. Detect anomalies. Generate compliance-ready reports.</p>
+    <div class="hero-actions anim-fu d3">
+      <a class="btn btn-white" href="#">Upload Data &rarr;</a>
+      <a class="btn btn-glass" href="#">View Demo</a>
+    </div>
+    <div class="hero-trust anim-fu d4">
+      <div class="hero-trust-item"><span class="hero-trust-val mono">$4.2B</span>analyzed</div>
+      <div class="hero-trust-item"><span class="hero-trust-val mono" style="color:#fca5a5">$187M</span>fraud found</div>
+      <div class="hero-trust-item"><span class="hero-trust-val mono" style="color:#86efac">94%</span>recovery rate</div>
+      <div class="hero-trust-item"><span class="hero-trust-val mono">99.97%</span>uptime</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-viz">
+      <!-- Card 1: Waste detected -->
+      <div class="viz-card card-red anim-fu d2">
+        <div class="viz-label">Waste Detected — FY25-Q4</div>
+        <div class="viz-row">
+          <span class="viz-value mono" style="color:#fca5a5">$12.3M</span>
+          <div class="viz-chart">
+            <div class="viz-bar" style="height:30%;background:rgba(220,38,38,0.2);animation-delay:0.1s"></div>
+            <div class="viz-bar" style="height:45%;background:rgba(220,38,38,0.25);animation-delay:0.15s"></div>
+            <div class="viz-bar" style="height:35%;background:rgba(220,38,38,0.25);animation-delay:0.2s"></div>
+            <div class="viz-bar" style="height:65%;background:rgba(220,38,38,0.3);animation-delay:0.25s"></div>
+            <div class="viz-bar" style="height:55%;background:rgba(220,38,38,0.3);animation-delay:0.3s"></div>
+            <div class="viz-bar" style="height:80%;background:rgba(220,38,38,0.35);animation-delay:0.35s"></div>
+            <div class="viz-bar" style="height:60%;background:rgba(220,38,38,0.35);animation-delay:0.4s"></div>
+            <div class="viz-bar" style="height:90%;background:rgba(220,38,38,0.4);animation-delay:0.45s"></div>
+            <div class="viz-bar" style="height:75%;background:var(--red);animation-delay:0.5s"></div>
+          </div>
+        </div>
+        <div class="viz-footer">
+          <span class="viz-trend" style="color:#fca5a5;background:rgba(220,38,38,0.1);">&#9650; 18% vs Q3</span>
+          <a class="viz-link" href="#">View details &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Benford's Law -->
+      <div class="viz-card card-blue anim-fu d3">
+        <div class="viz-label">Benford's Law — Digit Distribution</div>
+        <div class="benford-chart">
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:100%;width:9px;background:var(--accent-bright);animation-delay:0.1s"></div>
+              <div class="benford-bar benford-expected" style="height:96%;width:9px;animation-delay:0.12s"></div>
+            </div>
+            <span class="benford-label">1</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:56%;width:9px;background:var(--accent-bright);animation-delay:0.15s"></div>
+              <div class="benford-bar benford-expected" style="height:58%;width:9px;animation-delay:0.17s"></div>
+            </div>
+            <span class="benford-label">2</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:52%;width:9px;background:var(--red);animation-delay:0.2s"></div>
+              <div class="benford-bar benford-expected" style="height:40%;width:9px;animation-delay:0.22s"></div>
+            </div>
+            <span class="benford-label">3</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:32%;width:9px;background:var(--accent-bright);animation-delay:0.25s"></div>
+              <div class="benford-bar benford-expected" style="height:30%;width:9px;animation-delay:0.27s"></div>
+            </div>
+            <span class="benford-label">4</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:28%;width:9px;background:var(--accent-bright);animation-delay:0.3s"></div>
+              <div class="benford-bar benford-expected" style="height:25%;width:9px;animation-delay:0.32s"></div>
+            </div>
+            <span class="benford-label">5</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:20%;width:9px;background:var(--accent-bright);animation-delay:0.35s"></div>
+              <div class="benford-bar benford-expected" style="height:22%;width:9px;animation-delay:0.37s"></div>
+            </div>
+            <span class="benford-label">6</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:18%;width:9px;background:var(--accent-bright);animation-delay:0.4s"></div>
+              <div class="benford-bar benford-expected" style="height:18%;width:9px;animation-delay:0.42s"></div>
+            </div>
+            <span class="benford-label">7</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:38%;width:9px;background:var(--red);animation-delay:0.45s"></div>
+              <div class="benford-bar benford-expected" style="height:16%;width:9px;animation-delay:0.47s"></div>
+            </div>
+            <span class="benford-label">8</span>
+          </div>
+          <div class="benford-bar-group">
+            <div style="display:flex;gap:2px;align-items:flex-end;height:50px">
+              <div class="benford-bar" style="height:14%;width:9px;background:var(--accent-bright);animation-delay:0.5s"></div>
+              <div class="benford-bar benford-expected" style="height:14%;width:9px;animation-delay:0.52s"></div>
+            </div>
+            <span class="benford-label">9</span>
+          </div>
+        </div>
+        <div class="viz-footer">
+          <span style="font-size:10px;color:rgba(255,255,255,0.3);">&#9679; Observed &nbsp; &#9633; Expected &nbsp; <span style="color:#fca5a5">&#9679; Anomaly</span></span>
+        </div>
+      </div>
+
+      <!-- Card 3: Active flags -->
+      <div class="viz-card card-amber anim-fu d4">
+        <div class="viz-label">Active Investigation Queue</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="viz-value mono" style="color:#fde68a;font-size:24px;">127 flags</span>
+          <div style="display:flex;gap:8px;">
+            <span style="font-size:11px;color:#fca5a5;background:rgba(220,38,38,0.1);padding:2px 8px;border-radius:3px;font-weight:600;">14 CRIT</span>
+            <span style="font-size:11px;color:#fde68a;background:rgba(234,179,8,0.1);padding:2px 8px;border-radius:3px;font-weight:600;">38 HIGH</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee strip -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span class="marquee-item">Dept. of Defense</span><span class="marquee-dot"></span>
+    <span class="marquee-item">HHS Inspector General</span><span class="marquee-dot"></span>
+    <span class="marquee-item">Government Accountability Office</span><span class="marquee-dot"></span>
+    <span class="marquee-item">State of California</span><span class="marquee-dot"></span>
+    <span class="marquee-item">USAID</span><span class="marquee-dot"></span>
+    <span class="marquee-item">Dept. of Veterans Affairs</span><span class="marquee-dot"></span>
+    <span class="marquee-item">EPA Office of Inspector General</span><span class="marquee-dot"></span>
+    <span class="marquee-item">State of Texas</span><span class="marquee-dot"></span>
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item">Dept. of Defense</span><span class="marquee-dot"></span>
+    <span class="marquee-item">HHS Inspector General</span><span class="marquee-dot"></span>
+    <span class="marquee-item">Government Accountability Office</span><span class="marquee-dot"></span>
+    <span class="marquee-item">State of California</span><span class="marquee-dot"></span>
+    <span class="marquee-item">USAID</span><span class="marquee-dot"></span>
+    <span class="marquee-item">Dept. of Veterans Affairs</span><span class="marquee-dot"></span>
+    <span class="marquee-item">EPA Office of Inspector General</span><span class="marquee-dot"></span>
+    <span class="marquee-item">State of Texas</span><span class="marquee-dot"></span>
+  </div>
+</div>
+
+<!-- Dashboard Preview -->
+<section class="dash-section">
+  <div class="dash-label anim-fu">&#9673; Platform Preview</div>
+  <div class="dash-title anim-fu d1">Command Center</div>
+
+  <div class="dash-frame anim-fu d2">
+    <div class="dash-tabs">
+      <span class="dash-tab active">Overview</span>
+      <span class="dash-tab">Red Flags <span class="tab-badge">12</span></span>
+      <span class="dash-tab">Vendors</span>
+      <span class="dash-tab">Departments</span>
+      <span class="dash-search">&#128269; Search vendors, flags...</span>
+    </div>
+
+    <div class="dash-metrics">
+      <div class="d-metric">
+        <div class="d-metric-label">Total Spend</div>
+        <div class="d-metric-value mono">$847M</div>
+        <div class="d-metric-sparkline">
+          <div class="spark" style="height:40%;background:rgba(37,99,235,0.15)"></div>
+          <div class="spark" style="height:55%;background:rgba(37,99,235,0.15)"></div>
+          <div class="spark" style="height:50%;background:rgba(37,99,235,0.2)"></div>
+          <div class="spark" style="height:70%;background:rgba(37,99,235,0.2)"></div>
+          <div class="spark" style="height:65%;background:rgba(37,99,235,0.25)"></div>
+          <div class="spark" style="height:85%;background:rgba(37,99,235,0.3)"></div>
+          <div class="spark" style="height:80%;background:rgba(37,99,235,0.3)"></div>
+          <div class="spark" style="height:95%;background:rgba(37,99,235,0.4)"></div>
+          <div class="spark" style="height:100%;background:var(--accent)"></div>
+        </div>
+      </div>
+      <div class="d-metric">
+        <div class="d-metric-label">Waste Detected</div>
+        <div class="d-metric-value mono" style="color:var(--red)">$12.3M</div>
+        <div class="d-metric-trend up">&#9650; +18% vs Q3</div>
+        <div class="d-metric-sparkline">
+          <div class="spark" style="height:25%;background:rgba(220,38,38,0.15)"></div>
+          <div class="spark" style="height:40%;background:rgba(220,38,38,0.15)"></div>
+          <div class="spark" style="height:30%;background:rgba(220,38,38,0.2)"></div>
+          <div class="spark" style="height:55%;background:rgba(220,38,38,0.25)"></div>
+          <div class="spark" style="height:50%;background:rgba(220,38,38,0.25)"></div>
+          <div class="spark" style="height:70%;background:rgba(220,38,38,0.3)"></div>
+          <div class="spark" style="height:60%;background:rgba(220,38,38,0.3)"></div>
+          <div class="spark" style="height:85%;background:rgba(220,38,38,0.4)"></div>
+          <div class="spark" style="height:72%;background:var(--red)"></div>
+        </div>
+      </div>
+      <div class="d-metric">
+        <div class="d-metric-label">Savings Identified</div>
+        <div class="d-metric-value mono" style="color:var(--green)">$8.7M</div>
+        <div class="d-metric-trend down">&#9650; +23% vs Q3</div>
+        <div class="d-metric-sparkline">
+          <div class="spark" style="height:20%;background:rgba(22,163,74,0.15)"></div>
+          <div class="spark" style="height:35%;background:rgba(22,163,74,0.15)"></div>
+          <div class="spark" style="height:40%;background:rgba(22,163,74,0.2)"></div>
+          <div class="spark" style="height:50%;background:rgba(22,163,74,0.25)"></div>
+          <div class="spark" style="height:55%;background:rgba(22,163,74,0.25)"></div>
+          <div class="spark" style="height:65%;background:rgba(22,163,74,0.3)"></div>
+          <div class="spark" style="height:70%;background:rgba(22,163,74,0.3)"></div>
+          <div class="spark" style="height:82%;background:rgba(22,163,74,0.4)"></div>
+          <div class="spark" style="height:95%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="d-metric">
+        <div class="d-metric-label">Active Flags</div>
+        <div class="d-metric-value mono" style="color:var(--amber)">127</div>
+        <div class="d-metric-sparkline">
+          <div class="spark" style="height:45%;background:rgba(217,119,6,0.15)"></div>
+          <div class="spark" style="height:50%;background:rgba(217,119,6,0.15)"></div>
+          <div class="spark" style="height:42%;background:rgba(217,119,6,0.2)"></div>
+          <div class="spark" style="height:60%;background:rgba(217,119,6,0.2)"></div>
+          <div class="spark" style="height:55%;background:rgba(217,119,6,0.25)"></div>
+          <div class="spark" style="height:68%;background:rgba(217,119,6,0.3)"></div>
+          <div class="spark" style="height:72%;background:rgba(217,119,6,0.3)"></div>
+          <div class="spark" style="height:70%;background:rgba(217,119,6,0.35)"></div>
+          <div class="spark" style="height:78%;background:var(--amber)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="d-table-bar">
+      <span class="d-table-title">Highest Risk Vendors</span>
+      <div class="d-table-actions">
+        <span class="d-table-action">Export</span>
+        <span class="d-table-action">Filter</span>
+      </div>
+    </div>
+    <div class="d-row head">
+      <span>Vendor</span><span>Total Paid</span><span>Transactions</span><span>Risk</span><span>Severity</span>
+    </div>
+    <div class="d-row">
+      <span class="d-vendor"><span class="d-vendor-icon" style="background:var(--red)">MC</span>Meridian Consulting LLC</span>
+      <span class="mono">$4,231,800</span>
+      <span class="mono">847</span>
+      <span><div class="d-risk-bar"><div class="d-risk-fill" style="width:92%;background:var(--red)"></div></div></span>
+      <span><span class="d-sev d-sev-crit">CRIT</span></span>
+    </div>
+    <div class="d-row">
+      <span class="d-vendor"><span class="d-vendor-icon" style="background:var(--amber)">PS</span>Pacific Supply Co.</span>
+      <span class="mono">$2,890,100</span>
+      <span class="mono">423</span>
+      <span><div class="d-risk-bar"><div class="d-risk-fill" style="width:78%;background:var(--amber)"></div></div></span>
+      <span><span class="d-sev d-sev-high">HIGH</span></span>
+    </div>
+    <div class="d-row">
+      <span class="d-vendor"><span class="d-vendor-icon" style="background:var(--amber)">NS</span>Northern Services Group</span>
+      <span class="mono">$1,567,000</span>
+      <span class="mono">312</span>
+      <span><div class="d-risk-bar"><div class="d-risk-fill" style="width:71%;background:var(--amber)"></div></div></span>
+      <span><span class="d-sev d-sev-high">HIGH</span></span>
+    </div>
+    <div class="d-row">
+      <span class="d-vendor"><span class="d-vendor-icon" style="background:var(--accent)">AP</span>Atlas Procurement Inc.</span>
+      <span class="mono">$987,400</span>
+      <span class="mono">156</span>
+      <span><div class="d-risk-bar"><div class="d-risk-fill" style="width:52%;background:var(--accent)"></div></div></span>
+      <span><span class="d-sev d-sev-med">MED</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how">
+  <div class="how-inner">
+    <h2 class="serif">How It Works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num mono" style="background:var(--accent-bg);color:var(--accent);">01</div>
+        <div class="how-card-title">Upload</div>
+        <div class="how-card-desc">CSV or XLSX spending data. No preprocessing. PII is never stored.</div>
+        <span class="how-badge" style="background:var(--accent-bg);color:var(--accent);">60-second setup</span>
+      </div>
+      <div class="how-card">
+        <div class="how-num mono" style="background:var(--red-bg);color:var(--red);">02</div>
+        <div class="how-card-title">Analyze</div>
+        <div class="how-card-desc">Benford's Law, Z-score anomaly detection, and risk scoring run automatically.</div>
+        <span class="how-badge" style="background:var(--red-bg);color:var(--red);">3 forensic engines</span>
+      </div>
+      <div class="how-card">
+        <div class="how-num mono" style="background:var(--green-bg);color:var(--green);">03</div>
+        <div class="how-card-title">Report</div>
+        <div class="how-card-desc">Compliance-ready PDFs with evidence chains, flags, and recommended actions.</div>
+        <span class="how-badge" style="background:var(--green-bg);color:var(--green);">Audit-ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Compliance -->
+<section class="compliance">
+  <div class="compliance-inner">
+    <div class="comp-badge"><span class="comp-icon">&#128274;</span> SOC 2 Type II</div>
+    <div class="comp-badge"><span class="comp-icon">&#127963;</span> FedRAMP Ready</div>
+    <div class="comp-badge"><span class="comp-icon">&#9855;</span> WCAG 2.1 AA</div>
+    <div class="comp-badge"><span class="comp-icon">&#128737;</span> AES-256 Encrypted</div>
+    <div class="comp-badge"><span class="comp-icon">&#128205;</span> US Data Residency</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <h2 class="serif">Request a platform demo</h2>
+    <p>See how WasteWatch detected $187M in fraud across 42 federal agencies.</p>
+    <div class="cta-btns">
+      <a class="btn btn-white" style="padding:12px 32px;font-size:15px;" href="#">Schedule Demo &rarr;</a>
+      <a class="btn btn-glass" style="padding:12px 32px;font-size:15px;" href="#">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>&copy; 2026 WasteWatch — Government-Grade Fraud Detection</span>
+  <div class="f-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Accessibility</a>
+    <a href="#">Status</a>
+  </div>
+</footer>
+
+</body>
+</html>

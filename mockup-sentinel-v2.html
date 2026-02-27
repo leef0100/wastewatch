@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWatch — Sentinel V2 (Refined Depth)</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --white: #ffffff;
+    --ink: #0c1222;
+    --ink-soft: #364152;
+    --ink-muted: #637083;
+    --border: #d2d7e0;
+    --border-light: #e8ebf0;
+    --navy: #0a1f38;
+    --navy-mid: #122d4d;
+    --navy-light: #1a3f6b;
+    --accent: #1d6ce0;
+    --accent-light: #e8f0fe;
+    --red: #c4161c;
+    --red-bg: #fef2f2;
+    --green: #0a7b3e;
+    --green-bg: #ecfdf5;
+    --gold: #b47a0a;
+    --gold-bg: #fefce8;
+    --stripe: #f0f2f6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Source Sans 3', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .serif { font-family: 'Merriweather', Georgia, serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: 200px 0; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(29,108,224,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(29,108,224,0); }
+  }
+  @keyframes borderDraw {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  @keyframes scanline {
+    0% { top: 0; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes barGrow {
+    from { height: 0; }
+  }
+  @keyframes numberTick {
+    0% { opacity: 0; transform: translateY(8px); }
+    60% { opacity: 1; transform: translateY(-2px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-up { animation: fadeUp 0.6s ease-out both; }
+  .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+
+  /* ===== OFFICIAL BANNER ===== */
+  .official-banner {
+    background: var(--navy);
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    padding: 7px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .official-banner .shield {
+    width: 16px; height: 16px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .header-logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 13px; letter-spacing: -0.5px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(10,31,56,0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .logo-mark:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(10,31,56,0.3); }
+  .header-name { font-size: 17px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; }
+  .header-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); font-weight: 600; }
+
+  .header-nav { display: flex; gap: 4px; }
+  .header-nav a {
+    font-size: 14px; color: var(--ink-soft); text-decoration: none; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; transition: all 0.2s;
+    position: relative;
+  }
+  .header-nav a:hover { background: var(--stripe); color: var(--ink); }
+  .header-nav a.active {
+    color: var(--accent); font-weight: 600;
+    background: var(--accent-light);
+  }
+  .header-nav a.active::after {
+    content: '';
+    position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+    width: 20px; height: 2px; background: var(--accent); border-radius: 1px;
+    animation: borderDraw 0.3s ease-out;
+  }
+
+  .header-actions { display: flex; gap: 8px; }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+    border-radius: 6px; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px; transition: all 0.2s; border: none;
+    position: relative; overflow: hidden;
+  }
+  .btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(rgba(255,255,255,0.1), transparent);
+    pointer-events: none;
+  }
+  .btn-navy {
+    background: linear-gradient(180deg, var(--navy-mid), var(--navy));
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(10,31,56,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .btn-navy:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,31,56,0.25), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .btn-outline {
+    background: var(--white); color: var(--ink-soft);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-white {
+    background: #fff; color: var(--navy); font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .btn-white:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+  /* ===== TAG ===== */
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase; border-radius: 4px;
+  }
+  .tag-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulseGlow 2s ease-in-out infinite; }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(175deg, var(--navy) 0%, #071526 65%, #0d2240 100%);
+    color: #fff; padding: 72px 32px 64px; position: relative; overflow: hidden;
+  }
+  /* Subtle grid overlay */
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  /* Accent glow */
+  .hero::after {
+    content: ''; position: absolute; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(29,108,224,0.08) 0%, transparent 70%);
+    top: -100px; right: 10%; pointer-events: none;
+  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 2; }
+  .hero-content { max-width: 600px; }
+  .hero h1 {
+    font-size: 44px; font-weight: 700; line-height: 1.15; letter-spacing: -0.5px;
+    margin-top: 16px; margin-bottom: 16px;
+  }
+  .hero p { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 500px; margin-bottom: 28px; }
+  .hero-actions { display: flex; gap: 12px; }
+
+  /* Hero stats panel */
+  .hero-panel {
+    width: 280px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07); border-radius: 10px;
+    overflow: hidden; backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .hero-panel-header {
+    padding: 10px 16px; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.2px; color: rgba(255,255,255,0.35); font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); animation: pulseGlow 2s ease-in-out infinite; }
+  .hero-stat {
+    padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+  }
+  .hero-stat:last-child { border-bottom: none; }
+  .hero-stat:hover { background: rgba(255,255,255,0.03); }
+  .hero-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+  .hero-stat-row { display: flex; align-items: baseline; gap: 8px; }
+  .hero-stat-value { font-size: 26px; font-weight: 700; }
+  .hero-stat-trend { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
+  .trend-up { color: #fca5a5; background: rgba(252,165,165,0.1); }
+  .trend-down { color: #86efac; background: rgba(134,239,172,0.1); }
+
+  /* ===== DASHBOARD PREVIEW ===== */
+  .dashboard-section { padding: 56px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-muted); font-weight: 600; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::before { content: ''; width: 16px; height: 1px; background: var(--border); }
+  .section-title { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 24px; }
+
+  .dashboard {
+    display: flex; border: 1px solid var(--border); background: var(--white);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03);
+    transition: box-shadow 0.3s;
+  }
+  .dashboard:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.03); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 200px; background: linear-gradient(180deg, var(--navy), #061424);
+    padding: 16px 0; flex-shrink: 0;
+  }
+  .sidebar-section {
+    padding: 0 16px 12px; font-size: 10px; color: rgba(255,255,255,0.3);
+    text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 16px;
+    font-size: 13px; cursor: pointer; transition: all 0.15s;
+    border-left: 3px solid transparent; color: rgba(255,255,255,0.5);
+    position: relative;
+  }
+  .sidebar-item.active {
+    background: linear-gradient(90deg, rgba(29,108,224,0.15), transparent);
+    border-left-color: var(--accent); color: #fff; font-weight: 600;
+  }
+  .sidebar-item:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.03); }
+  .sidebar-icon { font-size: 14px; width: 18px; text-align: center; opacity: 0.8; }
+  .sidebar-count {
+    margin-left: auto; background: var(--red); color: #fff;
+    font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+    min-width: 20px; text-align: center;
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* Main content */
+  .main { flex: 1; min-width: 0; }
+  .breadcrumb {
+    padding: 10px 20px; border-bottom: 1px solid var(--border-light);
+    font-size: 12px; color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center;
+  }
+  .breadcrumb-path span { color: var(--ink-soft); font-weight: 600; }
+  .live-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+  .live-indicator .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  /* Metrics row */
+  .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .metric {
+    padding: 20px 24px; border-right: 1px solid var(--border-light);
+    transition: background 0.2s; position: relative; overflow: hidden;
+  }
+  .metric:last-child { border-right: none; }
+  .metric:hover { background: var(--stripe); }
+  /* Subtle top accent on hover */
+  .metric::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent); transform: scaleX(0);
+    transition: transform 0.3s; transform-origin: left;
+  }
+  .metric:hover::before { transform: scaleX(1); }
+  .metric-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--ink-muted); margin-bottom: 6px;
+  }
+  .metric-value {
+    font-size: 30px; font-weight: 700; line-height: 1.1;
+    animation: numberTick 0.5s ease-out both;
+  }
+  .metric-change { font-size: 12px; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .metric-change.up { color: var(--red); }
+  .metric-change.down { color: var(--green); }
+  .metric-bar {
+    margin-top: 10px; height: 3px; background: var(--border-light); border-radius: 2px; overflow: hidden;
+  }
+  .metric-bar-fill { height: 100%; border-radius: 2px; animation: borderDraw 1s ease-out 0.3s both; }
+
+  /* Table */
+  .table-header-bar {
+    padding: 12px 20px; font-size: 12px; font-weight: 600; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.5px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .table-count { font-size: 11px; color: var(--ink-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .table-row {
+    display: grid; grid-template-columns: 2.2fr 1fr 0.8fr 70px 80px;
+    padding: 11px 20px; font-size: 13px; border-bottom: 1px solid var(--border-light);
+    align-items: center; transition: background 0.15s, transform 0.15s;
+    cursor: default;
+  }
+  .table-row.header {
+    font-size: 10px; font-weight: 600; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.8px; background: var(--stripe);
+    cursor: default;
+  }
+  .table-row:not(.header):hover { background: var(--accent-light); transform: translateX(2px); }
+  .vendor-name { font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .vendor-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .severity-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px; text-align: center;
+  }
+  .sev-crit { background: var(--red-bg); color: var(--red); }
+  .sev-high { background: #fef3c7; color: #92400e; }
+  .sev-med { background: var(--accent-light); color: var(--accent); }
+  .flag-dots { display: flex; gap: 3px; }
+  .flag-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* ===== HOW IT WORKS ===== */
+  .how-section { padding: 64px 32px; background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .how-inner { max-width: 1000px; margin: 0 auto; }
+  .how-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 40px; }
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .how-step {
+    padding: 32px; border-left: 1px solid var(--border);
+    position: relative; transition: background 0.2s;
+  }
+  .how-step:first-child { border-left: none; }
+  .how-step:hover { background: var(--stripe); }
+  /* Step connector line */
+  .how-step::after {
+    content: ''; position: absolute; top: 50px; right: -8px;
+    width: 16px; height: 1px; background: var(--border);
+  }
+  .how-step:last-child::after { display: none; }
+  .how-number {
+    font-size: 36px; font-weight: 700; color: var(--accent);
+    margin-bottom: 12px; line-height: 1;
+    transition: transform 0.2s;
+  }
+  .how-step:hover .how-number { transform: scale(1.05); }
+  .how-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+  .how-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
+  .how-tag {
+    display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 600;
+    color: var(--accent); background: var(--accent-light); padding: 3px 10px; border-radius: 4px;
+  }
+
+  /* ===== COMPLIANCE ===== */
+  .compliance {
+    padding: 48px 32px; display: flex; justify-content: center; gap: 48px;
+    align-items: center; background: var(--bg);
+  }
+  .compliance-badge {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    padding: 10px 18px; background: var(--white);
+    border: 1px solid var(--border-light); border-radius: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .compliance-badge:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .compliance-icon {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  /* ===== CTA ===== */
+  .cta {
+    background: linear-gradient(175deg, var(--navy), #071526);
+    padding: 72px 32px; text-align: center; position: relative; overflow: hidden;
+  }
+  .cta::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .cta-inner { position: relative; z-index: 2; }
+  .cta h2 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .cta p { color: rgba(255,255,255,0.55); font-size: 16px; margin-bottom: 28px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .cta-buttons { display: flex; gap: 10px; justify-content: center; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 20px 32px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-muted);
+  }
+  footer .links { display: flex; gap: 16px; }
+  footer .links a { color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+  footer .links a:hover { color: var(--ink-soft); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .hero-inner { flex-direction: column; gap: 32px; }
+    .hero-panel { width: 100%; }
+    .hero h1 { font-size: 32px; }
+    .sidebar { display: none; }
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .how-grid { grid-template-columns: 1fr; }
+    .how-step { border-left: none; border-top: 1px solid var(--border); }
+    .how-step:first-child { border-top: none; }
+    .how-step::after { display: none; }
+    .table-row { grid-template-columns: 2fr 1fr 80px; }
+    .table-row span:nth-child(3) { display: none; }
+    .table-row span:nth-child(5) { display: none; }
+    .compliance { flex-wrap: wrap; gap: 12px; }
+    header { padding: 0 20px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Official banner -->
+<div class="official-banner animate-fade-in">
+  <span class="shield">&#9737;</span>
+  An official government-grade analysis platform — <strong>WasteWatch.gov</strong>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-logo">
+    <div class="logo-mark">WW</div>
+    <div>
+      <div class="header-name">WasteWatch</div>
+      <div class="header-sub">Fraud Detection Platform</div>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <a href="#" class="active">Platform</a>
+    <a href="#">How It Works</a>
+    <a href="#">Compliance</a>
+    <a href="#">Pricing</a>
+    <a href="#">Contact</a>
+  </nav>
+  <div class="header-actions">
+    <a class="btn btn-outline" href="#">Sign In</a>
+    <a class="btn btn-navy" href="#">Request Access</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <span class="tag animate-fade-up" style="color:#93c5fd;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.15);">
+        <span class="tag-dot" style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.5);"></span>
+        Trusted by 42 Federal Agencies
+      </span>
+      <h1 class="serif animate-fade-up delay-1">Identify fraud, waste, and abuse in public spending</h1>
+      <p class="animate-fade-up delay-2">Statistical forensics platform for government auditors. Upload spending data, detect anomalies with Benford's Law analysis, and generate compliance-ready reports.</p>
+      <div class="hero-actions animate-fade-up delay-3">
+        <a class="btn btn-white" href="#">Upload Data &rarr;</a>
+        <a class="btn btn-ghost" href="#">View Demo</a>
+      </div>
+    </div>
+
+    <div class="hero-panel animate-fade-up delay-4">
+      <div class="hero-panel-header">
+        <span class="live-dot"></span> Live Platform Metrics
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Data Analyzed</div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-value mono" style="color:#93c5fd">$4.2B</span>
+          <span class="hero-stat-trend trend-down">&#9650; 12%</span>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Fraud Identified</div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-value mono" style="color:#fca5a5">$187M</span>
+          <span class="hero-stat-trend trend-up">&#9650; 18%</span>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Avg Detection Time</div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-value mono" style="color:#86efac">&lt; 60s</span>
+          <span class="hero-stat-trend trend-down">&#9660; 23%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Preview -->
+<section class="dashboard-section">
+  <div class="section-label animate-fade-up">Platform Preview</div>
+  <h3 class="section-title animate-fade-up delay-1">Command Center Dashboard</h3>
+
+  <div class="dashboard animate-fade-up delay-2">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">Navigation</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">&#9673;</span> Command Center</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9873;</span> Red Flags <span class="sidebar-count">12</span></div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9678;</span> Investigations</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9638;</span> Departments</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9672;</span> Vendors</div>
+      <div class="sidebar-item"><span class="sidebar-icon">&#9636;</span> Reports</div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="breadcrumb">
+        <div class="breadcrumb-path">Command Center / <span>FY2025-Q4</span></div>
+        <div class="live-indicator"><span class="dot"></span> Updated 2 min ago</div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-row">
+        <div class="metric">
+          <div class="metric-label">Total Spend</div>
+          <div class="metric-value mono">$847M</div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:100%;background:var(--accent);"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Waste Detected</div>
+          <div class="metric-value mono" style="color:var(--red)">$12.3M</div>
+          <div class="metric-change up">&#9650; +18% vs Q3</div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:62%;background:var(--red);"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Savings Identified</div>
+          <div class="metric-value mono" style="color:var(--green)">$8.7M</div>
+          <div class="metric-change down">&#9650; +23% vs Q3</div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:78%;background:var(--green);"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Active Flags</div>
+          <div class="metric-value mono" style="color:var(--gold)">127</div>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:45%;background:var(--gold);"></div></div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-header-bar">
+        <span>Highest Risk Vendors</span>
+        <span class="table-count">Showing 4 of 23 flagged</span>
+      </div>
+      <div class="table-row header">
+        <span>Vendor</span><span>Total Paid</span><span>Transactions</span><span>Risk</span><span>Flags</span>
+      </div>
+      <div class="table-row">
+        <span class="vendor-name"><span class="vendor-dot" style="background:var(--red)"></span>Meridian Consulting LLC</span>
+        <span class="mono">$4,231,800</span>
+        <span class="mono">847</span>
+        <span><span class="severity-badge sev-crit">CRIT</span></span>
+        <span class="flag-dots"><span class="flag-dot" style="background:var(--red)"></span><span class="flag-dot" style="background:var(--red)"></span><span class="flag-dot" style="background:var(--red)"></span></span>
+      </div>
+      <div class="table-row" style="background:var(--stripe)">
+        <span class="vendor-name"><span class="vendor-dot" style="background:var(--gold)"></span>Pacific Supply Co.</span>
+        <span class="mono">$2,890,100</span>
+        <span class="mono">423</span>
+        <span><span class="severity-badge sev-high">HIGH</span></span>
+        <span class="flag-dots"><span class="flag-dot" style="background:var(--gold)"></span><span class="flag-dot" style="background:var(--gold)"></span></span>
+      </div>
+      <div class="table-row">
+        <span class="vendor-name"><span class="vendor-dot" style="background:var(--gold)"></span>Northern Services Group</span>
+        <span class="mono">$1,567,000</span>
+        <span class="mono">312</span>
+        <span><span class="severity-badge sev-high">HIGH</span></span>
+        <span class="flag-dots"><span class="flag-dot" style="background:var(--gold)"></span><span class="flag-dot" style="background:var(--gold)"></span></span>
+      </div>
+      <div class="table-row" style="background:var(--stripe)">
+        <span class="vendor-name"><span class="vendor-dot" style="background:var(--accent)"></span>Atlas Procurement Inc.</span>
+        <span class="mono">$987,400</span>
+        <span class="mono">156</span>
+        <span><span class="severity-badge sev-med">MED</span></span>
+        <span class="flag-dots"><span class="flag-dot" style="background:var(--accent)"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section">
+  <div class="how-inner">
+    <h2 class="serif">How It Works</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-number mono">01</div>
+        <div class="how-title">Upload</div>
+        <div class="how-desc">CSV or XLSX spending data. No preprocessing required. PII is never stored.</div>
+        <span class="how-tag">60-second setup</span>
+      </div>
+      <div class="how-step">
+        <div class="how-number mono">02</div>
+        <div class="how-title">Analyze</div>
+        <div class="how-desc">Benford's Law, Z-score anomaly detection, and multi-factor risk scoring run automatically.</div>
+        <span class="how-tag">3 forensic engines</span>
+      </div>
+      <div class="how-step">
+        <div class="how-number mono">03</div>
+        <div class="how-title">Report</div>
+        <div class="how-desc">Compliance-ready PDF reports with evidence chains, flag explanations, and recommended actions.</div>
+        <span class="how-tag">Audit-ready output</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Compliance -->
+<section class="compliance">
+  <div class="compliance-badge">
+    <span class="compliance-icon" style="background:var(--accent-light);">&#128274;</span>
+    SOC 2 Type II
+  </div>
+  <div class="compliance-badge">
+    <span class="compliance-icon" style="background:#ecfdf5;">&#127963;</span>
+    FedRAMP Ready
+  </div>
+  <div class="compliance-badge">
+    <span class="compliance-icon" style="background:#faf5ff;">&#9855;</span>
+    WCAG 2.1 AA
+  </div>
+  <div class="compliance-badge">
+    <span class="compliance-icon" style="background:var(--stripe);">&#128737;</span>
+    AES-256 Encrypted
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <h2 class="serif">Request a platform demo</h2>
+    <p>See how WasteWatch detected $187M in fraud across 42 federal agencies.</p>
+    <div class="cta-buttons">
+      <a class="btn btn-white" style="padding:12px 32px;font-size:15px;" href="#">Schedule Demo &rarr;</a>
+      <a class="btn btn-ghost" style="padding:12px 32px;font-size:15px;" href="#">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>&copy; 2026 WasteWatch — Government-Grade Fraud Detection &amp; Waste Analysis</span>
+  <div class="links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Accessibility</a>
+    <a href="#">Status</a>
+  </div>
+</footer>
+
+</body>
+</html>

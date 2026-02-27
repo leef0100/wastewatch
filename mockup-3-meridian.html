@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWatch — Meridian Theme (Modern Enterprise)</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf9;
+    --white: #ffffff;
+    --ink: #1c1917;
+    --ink-soft: #44403c;
+    --ink-muted: #78716c;
+    --border: #e7e5e4;
+    --border-subtle: #f5f5f4;
+    --surface: #f5f5f4;
+    --accent: #dc2626;
+    --accent-soft: #fef2f2;
+    --teal: #0d9488;
+    --teal-soft: #f0fdfa;
+    --amber: #d97706;
+    --amber-soft: #fffbeb;
+    --slate: #1e293b;
+    --slate-mid: #334155;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Source Sans 3', -apple-system, sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .display { font-family: 'DM Serif Display', Georgia, serif; }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; background: rgba(250,250,249,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 700; }
+  .nav-logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+  /* Buttons */
+  .btn { padding: 9px 20px; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; border: none; }
+  .btn-dark { background: var(--ink); color: #fff; font-weight: 600; }
+  .btn-dark:hover { background: #292524; }
+  .btn-accent { background: var(--accent); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(220,38,38,0.2); border-radius: 10px; }
+  .btn-accent:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(220,38,38,0.25); }
+  .btn-outline { background: transparent; color: var(--ink-soft); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--ink-muted); color: var(--ink); }
+  .btn-ghost-white { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; }
+  .btn-text { background: none; color: var(--ink-muted); font-weight: 500; padding: 8px 16px; }
+
+  /* Pill badge */
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
+  .pill-accent { color: var(--accent); background: rgba(220,38,38,0.05); border: 1px solid rgba(220,38,38,0.15); }
+  .pill-teal { color: var(--teal); background: rgba(13,148,136,0.05); border: 1px solid rgba(13,148,136,0.15); }
+  .pill-slate { color: #94a3b8; background: rgba(148,163,184,0.1); border: 1px solid rgba(148,163,184,0.15); }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* Hero */
+  .hero { padding: 100px 48px 80px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .hero-left h1 { font-size: 52px; font-weight: 700; line-height: 1.1; letter-spacing: -2px; margin-top: 20px; margin-bottom: 20px; }
+  .hero-left h1 .highlight { color: var(--accent); }
+  .hero-left p { font-size: 18px; color: var(--ink-muted); line-height: 1.65; max-width: 480px; margin-bottom: 32px; }
+  .hero-actions { display: flex; gap: 12px; }
+  .hero-proof { display: flex; gap: 20px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .hero-proof-item { font-size: 12px; color: var(--ink-muted); }
+  .hero-proof-value { font-weight: 700; font-size: 16px; display: block; margin-bottom: 2px; }
+  .hero-proof-divider { width: 1px; background: var(--border); }
+
+  /* Dashboard card */
+  .dashboard-card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  .dashboard-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .dashboard-tab { padding: 12px 20px; font-size: 13px; color: var(--ink-muted); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 400; }
+  .dashboard-tab.active { font-weight: 600; color: var(--ink); border-bottom-color: var(--accent); }
+  .dashboard-metrics { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .dashboard-metric { padding: 16px 20px; border-right: 1px solid var(--border); }
+  .dashboard-metric:last-child { border-right: none; }
+  .dm-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); margin-bottom: 4px; }
+  .dm-row { display: flex; justify-content: space-between; align-items: flex-end; }
+  .dm-value { font-size: 22px; font-weight: 700; }
+  .dm-change { font-size: 11px; font-weight: 600; margin-left: 6px; }
+
+  /* Mini bar chart */
+  .mini-bars { display: flex; align-items: flex-end; gap: 3px; height: 36px; }
+  .mini-bar { width: 7px; border-radius: 2px; transition: height 0.3s; }
+
+  /* Flag list */
+  .flag-list { border-top: 1px solid var(--border); }
+  .flag-list-header { padding: 10px 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); font-weight: 600; background: var(--surface); }
+  .flag-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; }
+  .flag-left { display: flex; align-items: center; gap: 8px; }
+  .flag-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .flag-right { display: flex; gap: 16px; align-items: center; }
+  .flag-amount { font-size: 12px; }
+  .flag-severity { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+
+  /* Social proof */
+  .proof-strip { padding: 40px 48px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; justify-content: center; gap: 48px; align-items: center; }
+  .proof-label { font-size: 13px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .proof-org { font-size: 14px; font-weight: 500; color: var(--ink-muted); }
+
+  /* Features */
+  .features { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+  .features-header { max-width: 500px; margin-bottom: 48px; }
+  .features-header h2 { font-size: 36px; font-weight: 700; letter-spacing: -1px; margin-top: 16px; line-height: 1.2; }
+  .features-header p { font-size: 16px; color: var(--ink-muted); line-height: 1.6; margin-top: 12px; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature-card { padding: 36px 32px; border-radius: 16px; background: var(--white); border: 1px solid var(--border); transition: box-shadow 0.3s, transform 0.2s; cursor: default; }
+  .feature-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); transform: translateY(-2px); }
+  .feature-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; font-weight: 700; font-size: 16px; margin-bottom: 20px; }
+  .feature-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .feature-card p { font-size: 15px; color: var(--ink-muted); line-height: 1.65; }
+
+  /* Case study */
+  .case-study { background: var(--slate); color: #fff; padding: 80px 48px; }
+  .case-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .case-left h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-top: 16px; line-height: 1.25; }
+  .case-left p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-top: 12px; margin-bottom: 28px; }
+  .case-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .case-stat-value { font-size: 48px; font-weight: 700; line-height: 1; letter-spacing: -2px; }
+  .case-stat-label { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.7); margin-top: 6px; }
+
+  /* CTA */
+  .cta { padding: 80px 48px; text-align: center; }
+  .cta h2 { font-size: 40px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 16px; }
+  .cta p { font-size: 17px; color: var(--ink-muted); max-width: 480px; margin: 0 auto 32px; }
+  .cta-actions { display: flex; gap: 12px; justify-content: center; }
+
+  /* Footer */
+  footer { padding: 24px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-muted); }
+  footer .footer-links { display: flex; gap: 24px; }
+  footer .footer-links a { color: var(--ink-muted); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+    .hero-left h1 { font-size: 36px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .case-inner { grid-template-columns: 1fr; gap: 40px; }
+    .case-stats { grid-template-columns: 1fr 1fr; }
+    .proof-strip { flex-wrap: wrap; gap: 16px; }
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">W</div>
+    <span class="nav-logo-text">WasteWatch</span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Platform</a>
+    <a href="#">How It Works</a>
+    <a href="#">Compliance</a>
+    <a href="#">Pricing</a>
+  </div>
+  <div class="nav-actions">
+    <a class="btn btn-text" href="#">Log in</a>
+    <a class="btn btn-dark" href="#">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="pill pill-accent"><span class="pill-dot"></span> Government-Grade Forensics</span>
+    <h1>Find the fraud<br><span class="highlight">hiding in plain sight.</span></h1>
+    <p>WasteWatch applies Benford's Law, anomaly detection, and multi-factor risk scoring to government spending data — surfacing fraud patterns in under 60 seconds.</p>
+    <div class="hero-actions">
+      <a class="btn btn-accent" style="padding:12px 28px;font-size:15px;" href="#">Upload Your Data</a>
+      <a class="btn btn-outline" style="padding:12px 28px;font-size:15px;" href="#">Watch Demo</a>
+    </div>
+    <div class="hero-proof">
+      <div class="hero-proof-item">
+        <span class="hero-proof-value mono" style="color:var(--ink)">$4.2B</span> data analyzed
+      </div>
+      <div class="hero-proof-divider"></div>
+      <div class="hero-proof-item">
+        <span class="hero-proof-value mono" style="color:var(--accent)">$187M</span> fraud detected
+      </div>
+      <div class="hero-proof-divider"></div>
+      <div class="hero-proof-item">
+        <span class="hero-proof-value mono" style="color:var(--teal)">94%</span> recovery rate
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard card -->
+  <div class="dashboard-card">
+    <div class="dashboard-tabs">
+      <span class="dashboard-tab active">Overview</span>
+      <span class="dashboard-tab">Flags</span>
+      <span class="dashboard-tab">Vendors</span>
+    </div>
+    <div class="dashboard-metrics">
+      <div class="dashboard-metric">
+        <div class="dm-label">Waste Found</div>
+        <div class="dm-row">
+          <div>
+            <span class="dm-value mono" style="color:var(--accent)">$12.3M</span>
+            <span class="dm-change" style="color:var(--accent)">+18%</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar" style="height:25%;background:rgba(220,38,38,0.15)"></div>
+            <div class="mini-bar" style="height:40%;background:rgba(220,38,38,0.15)"></div>
+            <div class="mini-bar" style="height:32%;background:rgba(220,38,38,0.2)"></div>
+            <div class="mini-bar" style="height:65%;background:rgba(220,38,38,0.2)"></div>
+            <div class="mini-bar" style="height:48%;background:rgba(220,38,38,0.25)"></div>
+            <div class="mini-bar" style="height:75%;background:rgba(220,38,38,0.25)"></div>
+            <div class="mini-bar" style="height:88%;background:rgba(220,38,38,0.3)"></div>
+            <div class="mini-bar" style="height:80%;background:rgba(220,38,38,0.3)"></div>
+            <div class="mini-bar" style="height:100%;background:var(--accent)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-metric">
+        <div class="dm-label">Savings</div>
+        <div class="dm-row">
+          <div>
+            <span class="dm-value mono" style="color:var(--teal)">$8.7M</span>
+            <span class="dm-change" style="color:var(--teal)">+23%</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar" style="height:20%;background:rgba(13,148,136,0.15)"></div>
+            <div class="mini-bar" style="height:30%;background:rgba(13,148,136,0.15)"></div>
+            <div class="mini-bar" style="height:40%;background:rgba(13,148,136,0.2)"></div>
+            <div class="mini-bar" style="height:38%;background:rgba(13,148,136,0.2)"></div>
+            <div class="mini-bar" style="height:55%;background:rgba(13,148,136,0.25)"></div>
+            <div class="mini-bar" style="height:62%;background:rgba(13,148,136,0.25)"></div>
+            <div class="mini-bar" style="height:75%;background:rgba(13,148,136,0.3)"></div>
+            <div class="mini-bar" style="height:82%;background:rgba(13,148,136,0.3)"></div>
+            <div class="mini-bar" style="height:95%;background:var(--teal)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-metric">
+        <div class="dm-label">Risk Score</div>
+        <div class="dm-row">
+          <div>
+            <span class="dm-value mono" style="color:var(--amber)">73</span>
+            <span class="dm-change" style="color:var(--amber)">High</span>
+          </div>
+          <div class="mini-bars">
+            <div class="mini-bar" style="height:55%;background:rgba(217,119,6,0.15)"></div>
+            <div class="mini-bar" style="height:60%;background:rgba(217,119,6,0.15)"></div>
+            <div class="mini-bar" style="height:52%;background:rgba(217,119,6,0.2)"></div>
+            <div class="mini-bar" style="height:68%;background:rgba(217,119,6,0.2)"></div>
+            <div class="mini-bar" style="height:72%;background:rgba(217,119,6,0.25)"></div>
+            <div class="mini-bar" style="height:75%;background:rgba(217,119,6,0.25)"></div>
+            <div class="mini-bar" style="height:78%;background:rgba(217,119,6,0.3)"></div>
+            <div class="mini-bar" style="height:76%;background:rgba(217,119,6,0.3)"></div>
+            <div class="mini-bar" style="height:82%;background:var(--amber)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flag-list">
+      <div class="flag-list-header">Recent Flags</div>
+      <div class="flag-item">
+        <div class="flag-left">
+          <span class="flag-dot" style="background:var(--accent)"></span>
+          <span style="font-weight:500">Meridian Consulting</span>
+        </div>
+        <div class="flag-right">
+          <span class="flag-amount mono" style="color:var(--accent)">$2.4M</span>
+          <span class="flag-severity" style="color:var(--accent);background:var(--accent-soft)">Critical</span>
+        </div>
+      </div>
+      <div class="flag-item">
+        <div class="flag-left">
+          <span class="flag-dot" style="background:var(--amber)"></span>
+          <span style="font-weight:500">Pacific Supply Co.</span>
+        </div>
+        <div class="flag-right">
+          <span class="flag-amount mono" style="color:var(--amber)">$890K</span>
+          <span class="flag-severity" style="color:var(--amber);background:var(--amber-soft)">High</span>
+        </div>
+      </div>
+      <div class="flag-item">
+        <div class="flag-left">
+          <span class="flag-dot" style="background:var(--teal)"></span>
+          <span style="font-weight:500">Atlas Procurement</span>
+        </div>
+        <div class="flag-right">
+          <span class="flag-amount mono" style="color:var(--teal)">$340K</span>
+          <span class="flag-severity" style="color:var(--teal);background:var(--teal-soft)">Medium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social proof -->
+<section class="proof-strip">
+  <span class="proof-label">Trusted by</span>
+  <span class="proof-org">Dept. of Defense</span>
+  <span class="proof-org">HHS Inspector General</span>
+  <span class="proof-org">GAO</span>
+  <span class="proof-org">State of California</span>
+  <span class="proof-org">USAID</span>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <div class="features-header">
+    <span class="pill pill-teal">Analysis Engine</span>
+    <h2>Explainable forensics,<br>not black-box AI.</h2>
+    <p>Every detection is mathematically grounded. Every flag includes an evidence chain your auditors can trust.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-number mono" style="color:var(--accent);background:var(--accent-soft)">01</div>
+      <h3>Benford's Law</h3>
+      <p>First-digit frequency analysis detects fabricated or manipulated numbers. Chi-squared validation ensures statistical rigor.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-number mono" style="color:var(--amber);background:var(--amber-soft)">02</div>
+      <h3>Anomaly Detection</h3>
+      <p>Z-score and IQR-based outlier analysis across spending patterns, vendor behaviors, and seasonal norms.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-number mono" style="color:var(--teal);background:var(--teal-soft)">03</div>
+      <h3>Risk Scoring</h3>
+      <p>Multi-factor model combining transaction patterns, vendor history, department benchmarks, and Benford conformity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Case study -->
+<section class="case-study">
+  <div class="case-inner">
+    <div class="case-left">
+      <span class="pill pill-slate">Case Study</span>
+      <h2>How one state agency recovered $31.2M in fraudulent payments</h2>
+      <p>A state Medicare oversight agency used WasteWatch to analyze 3 years of claims data. Benford's Law analysis flagged a network of 12 entities with statistically impossible billing patterns.</p>
+      <a class="btn btn-ghost-white" href="#">Read Full Case Study &rarr;</a>
+    </div>
+    <div class="case-stats">
+      <div>
+        <div class="case-stat-value mono" style="color:#fca5a5">$31.2M</div>
+        <div class="case-stat-label">Fraud identified</div>
+      </div>
+      <div>
+        <div class="case-stat-value mono" style="color:#93c5fd">12</div>
+        <div class="case-stat-label">Entities flagged</div>
+      </div>
+      <div>
+        <div class="case-stat-value mono" style="color:#86efac">$93.6M</div>
+        <div class="case-stat-label">Treble damages</div>
+      </div>
+      <div>
+        <div class="case-stat-value mono" style="color:#fde68a">&lt; 48hr</div>
+        <div class="case-stat-label">Time to detection</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Stop fraud before it scales.</h2>
+  <p>Upload a spreadsheet. Get results in 60 seconds. No credit card needed.</p>
+  <div class="cta-actions">
+    <a class="btn btn-accent" style="padding:14px 32px;font-size:16px;" href="#">Start Free Trial</a>
+    <a class="btn btn-outline" style="padding:14px 32px;font-size:16px;" href="#">Talk to Sales</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>&copy; 2026 WasteWatch</span>
+  <div class="footer-links">
+    <a href="#">SOC 2 Type II</a>
+    <a href="#">FedRAMP Ready</a>
+    <a href="#">WCAG AA</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+</footer>
+
+</body>
+</html>
