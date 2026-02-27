@@ -82,7 +82,7 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold">Reports & Export</h1><p className="text-muted-foreground text-sm">Generate reports and export data for stakeholder review</p></div>
+      <div><h1 className="font-heading text-2xl font-bold">Reports & Export</h1><p className="text-muted-foreground text-sm">Generate reports and export data for stakeholder review</p></div>
 
       <Card className="border-savings/30">
         <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2"><TrendingDown className="w-4 h-4 text-savings" /> Savings Opportunities</CardTitle></CardHeader>

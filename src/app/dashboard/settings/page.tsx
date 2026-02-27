@@ -26,7 +26,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div><h1 className="text-2xl font-bold">Settings</h1><p className="text-muted-foreground text-sm">Configure detection rules, notifications, and preferences</p></div>
+      <div><h1 className="font-heading text-2xl font-bold">Settings</h1><p className="text-muted-foreground text-sm">Configure detection rules, notifications, and preferences</p></div>
 
       <Card>
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Shield className="w-4 h-4" /> Organization</CardTitle></CardHeader>

@@ -4,23 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/stores/useStore';
 import { generateDemoData } from '@/lib/data/demo-generator';
-import { motion } from 'framer-motion';
 import {
   Eye,
   ArrowRight,
   Shield,
-  BarChart3,
   AlertTriangle,
-  TrendingDown,
-  CheckCircle2,
-  Zap,
+  Upload,
+  BarChart3,
+  FileText,
+  Loader2,
   Lock,
   Globe,
-  Loader2,
-  Scale,
-  Network,
-  FileText,
+  CheckCircle2,
+  ExternalLink,
 } from 'lucide-react';
+import { WHOP_URL, APP_NAME } from '@/lib/constants';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -29,7 +27,6 @@ export default function LandingPage() {
 
   function handleTryDemo() {
     setLoading(true);
-    // Defer heavy work so the spinner renders first
     setTimeout(() => {
       const data = generateDemoData();
       loadDemoData(data);
@@ -39,14 +36,22 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* USWDS-style Official Banner */}
+      <div className="bg-primary text-primary-foreground text-xs py-1.5 px-4 text-center font-medium tracking-wide">
+        <span className="inline-flex items-center gap-1.5">
+          <Shield className="w-3 h-3" />
+          An official government-grade analysis platform &mdash; {APP_NAME}
+        </span>
+      </div>
+
       {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <nav className="border-b border-border bg-card">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
               <Eye className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-lg">WasteWatch</span>
+            <span className="font-semibold text-lg">{APP_NAME}</span>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             <button
@@ -57,234 +62,181 @@ export default function LandingPage() {
               Live Demo
             </button>
             <button
-              onClick={() => router.push('/onboarding')}
-              className="h-9 px-4 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
+              onClick={() => router.push('/trial')}
+              className="h-9 px-4 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
             >
-              Get Started
+              Start Free Trial
             </button>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6">
+      <section className="pt-16 sm:pt-20 pb-14 sm:pb-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-              <Zap className="w-3.5 h-3.5" />
-              Enterprise-grade waste detection
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6 tracking-tight">
-              Every dollar wasted is a dollar{' '}
-              <span className="text-primary">stolen</span> from your mission
-            </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              WasteWatch analyzes your spending data to uncover fraud, waste, and
-              inefficiency — automatically. Upload a spreadsheet and get actionable
-              insights in 60 seconds.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-              <button
-                onClick={handleTryDemo}
-                disabled={loading}
-                className="w-full sm:w-auto h-12 px-8 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-base cursor-pointer disabled:opacity-70"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Loading Demo...
-                  </>
-                ) : (
-                  <>
-                    Try Live Demo
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => router.push('/onboarding')}
-                className="w-full sm:w-auto h-12 px-8 border border-border text-foreground font-semibold rounded-lg hover:bg-accent transition-colors text-base cursor-pointer"
-              >
-                Start Free Analysis
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            {[
-              { value: '$2.4M', label: 'Average waste identified per customer', sub: 'within 30 days' },
-              { value: '47%', label: 'Of organizations have duplicate payments', sub: 'in their records' },
-              { value: '< 60s', label: 'Time to first insight', sub: 'from data upload' },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="p-6 rounded-xl bg-card border border-border text-center"
-              >
-                <div className="text-3xl font-bold font-data text-primary mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-foreground font-medium">{stat.label}</div>
-                <div className="text-xs text-muted-foreground">{stat.sub}</div>
-              </div>
-            ))}
-          </motion.div>
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5 tracking-tight text-foreground">
+            Government-Grade Fraud Detection
+            <br className="hidden sm:block" />
+            & Waste Analysis
+          </h1>
+          <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+            Upload your financial data. Receive automated anomaly detection, Benford&apos;s Law
+            analysis, vendor risk scoring, and actionable reports &mdash; in under 60 seconds.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <button
+              onClick={() => router.push('/trial')}
+              className="w-full sm:w-auto h-11 px-8 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-base cursor-pointer"
+            >
+              Upload Your Data
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleTryDemo}
+              disabled={loading}
+              className="w-full sm:w-auto h-11 px-8 border border-border text-foreground font-semibold rounded-md hover:bg-accent transition-colors text-base cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading Demo...
+                </>
+              ) : (
+                'View Live Demo'
+              )}
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20 px-4 sm:px-6 bg-secondary/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold mb-3">
-              How WasteWatch protects your budget
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Powerful analysis engine with zero configuration required
-            </p>
-          </div>
+      {/* Capabilities */}
+      <section className="py-14 px-4 sm:px-6 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="font-heading text-2xl font-bold mb-2 text-center">
+            Platform Capabilities
+          </h2>
+          <p className="text-muted-foreground text-center mb-10">
+            Statistical forensics and AI-powered analysis for public and private sector organizations
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
             {[
               {
                 icon: AlertTriangle,
                 title: 'Anomaly Detection',
                 description:
-                  'Automatically flags duplicate payments, split transactions, and suspicious patterns using statistical analysis.',
-                color: 'text-waste',
-              },
-              {
-                icon: BarChart3,
-                title: 'Spending Intelligence',
-                description:
-                  'Real-time dashboards showing spending by department, vendor, and category with drill-down capability.',
-                color: 'text-primary',
-              },
-              {
-                icon: TrendingDown,
-                title: 'Savings Calculator',
-                description:
-                  'Quantifies recoverable waste and projects annual savings from implementing recommendations.',
-                color: 'text-savings',
+                  'Identifies duplicate payments, split transactions, round-number abuse, ghost vendors, and end-of-period spending spikes.',
               },
               {
                 icon: Shield,
-                title: "Benford's Law Analysis",
+                title: "Benford's Law Forensics",
                 description:
-                  'Advanced forensic technique that detects manipulated financial data by analyzing digit distribution patterns.',
-                color: 'text-primary',
+                  'Applies first-digit distribution analysis to detect manipulated financial records and synthetic transaction data.',
               },
               {
-                icon: CheckCircle2,
-                title: 'Vendor Risk Scoring',
+                icon: BarChart3,
+                title: 'Vendor & Department Risk Scoring',
                 description:
-                  'Scores vendors based on flag history, concentration risk, and contract compliance to prioritize reviews.',
-                color: 'text-savings',
+                  'Scores vendors by flag history and concentration risk. Benchmarks departments by budget utilization and waste density.',
               },
               {
-                icon: Globe,
-                title: 'Department Benchmarking',
+                icon: FileText,
+                title: 'Automated Report Generation',
                 description:
-                  'Compares spending efficiency across departments to identify operational improvements.',
-                color: 'text-warning-accent',
+                  'Produces executive summaries, detailed waste analyses, savings projections, and draft False Claims Act complaints.',
               },
-            ].map((feature, i) => (
-              <motion.div
+            ].map((capability, i) => (
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="p-6 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
+                className="bg-card p-6 flex gap-4"
               >
-                <feature.icon className={`w-6 h-6 ${feature.color} mb-3`} />
-                <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
+                <capability.icon className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-sm mb-1">{capability.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {capability.description}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Medicare Investigation Showcase */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-waste/10 text-waste text-sm font-medium mb-4">
-              <Scale className="w-3.5 h-3.5" />
-              Featured Case Study
-            </div>
-            <h2 className="text-3xl font-bold mb-3">
-              $31.2M Medicare Fraud — Exposed in Minutes
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              See how WasteWatch analyzed 47,832 claims, mapped a shell company network,
-              and generated a draft FCA complaint — work that normally takes months.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      {/* How It Works */}
+      <section className="py-14 px-4 sm:px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl font-bold mb-10 text-center">
+            How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                icon: Network,
-                title: 'Entity Network Graph',
-                description: 'Interactive D3 visualization maps 12 entities and 18 connections including shell companies, kickback flows, and hidden ownership.',
-                stat: '12 entities mapped',
-                color: 'text-primary',
+                step: '01',
+                icon: Upload,
+                title: 'Upload',
+                description:
+                  'Upload your transaction data as CSV or Excel. No formatting required — WasteWatch maps your columns automatically.',
               },
               {
+                step: '02',
+                icon: BarChart3,
+                title: 'Analyze',
+                description:
+                  'The engine scans for duplicates, Benford anomalies, vendor risk, budget overruns, and statistical outliers in under 60 seconds.',
+              },
+              {
+                step: '03',
                 icon: FileText,
-                title: 'AI Document Analysis',
-                description: '6 evidence documents analyzed by AI with 20 critical findings, risk scores, and suggested enforcement actions.',
-                stat: '20 findings identified',
-                color: 'text-warning-accent',
-              },
-              {
-                icon: Scale,
-                title: 'FCA Complaint Generator',
-                description: 'Auto-generates a draft False Claims Act complaint with specific factual allegations, statutory citations, and treble damages.',
-                stat: '$93.6M treble damages',
-                color: 'text-waste',
+                title: 'Report',
+                description:
+                  'Review interactive dashboards, drill into flagged transactions, and export PDF/CSV reports for stakeholder review.',
               },
             ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="p-6 rounded-xl bg-card border border-border"
-              >
-                <item.icon className={`w-6 h-6 ${item.color} mb-3`} />
-                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.description}</p>
-                <div className="text-sm font-data font-semibold text-primary">{item.stat}</div>
-              </motion.div>
+              <div key={i} className="text-center">
+                <div className="w-12 h-12 rounded-md bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                  <item.icon className="w-5 h-5" />
+                </div>
+                <div className="text-xs text-gold font-semibold font-data tracking-wider mb-1">
+                  STEP {item.step}
+                </div>
+                <h3 className="font-semibold text-base mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
+      {/* Case Study */}
+      <section className="py-14 px-4 sm:px-6 border-t border-border bg-card">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-heading text-2xl font-bold mb-2 text-center">
+            Case Study: Medicare Fraud Detection
+          </h2>
+          <p className="text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
+            WasteWatch analyzed 47,832 Medicare claims and identified a $31.2M fraud network
+            involving shell companies, kickback payments, and falsified billing records.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            {[
+              { value: '$31.2M', label: 'Fraud identified' },
+              { value: '12', label: 'Entities mapped' },
+              { value: '$93.6M', label: 'Treble damages (FCA)' },
+            ].map((stat, i) => (
+              <div key={i} className="border border-border rounded-md p-4 text-center bg-background">
+                <div className="text-2xl font-bold font-data text-waste mb-0.5">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
+          </div>
           <div className="text-center">
             <button
               onClick={handleTryDemo}
               disabled={loading}
-              className="h-12 px-8 bg-waste text-white font-semibold rounded-lg hover:bg-waste/90 transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-70"
+              className="h-10 px-6 border border-border text-foreground font-medium rounded-md hover:bg-accent transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-70"
             >
               {loading ? (
                 <>
@@ -293,25 +245,53 @@ export default function LandingPage() {
                 </>
               ) : (
                 <>
-                  Explore the Medicare Investigation
+                  Explore Full Investigation
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
-            <p className="text-xs text-muted-foreground mt-3">
-              Full interactive demo with entity graph, evidence analysis, and complaint generator
-            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing / Subscribe CTA */}
+      <section className="py-14 px-4 sm:px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="font-heading text-2xl font-bold mb-3">
+            Subscribe for Full Access
+          </h2>
+          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+            Start with a free trial analysis of your data. Unlock full flag details,
+            department breakdowns, export capabilities, and investigation tools with a subscription.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={() => router.push('/trial')}
+              className="w-full sm:w-auto h-11 px-8 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Start Free Trial
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <a
+              href={WHOP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto h-11 px-8 border border-gold text-gold font-semibold rounded-md hover:bg-gold/10 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              View Pricing
+              <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </section>
 
       {/* Trust badges */}
-      <section className="py-16 px-4 sm:px-6">
+      <section className="py-10 px-4 sm:px-6 border-t border-border">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm text-muted-foreground mb-6 uppercase tracking-wider font-medium">
-            Enterprise Security & Compliance
+          <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider font-medium">
+            Security & Compliance
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             {[
               { icon: Lock, label: 'SOC 2 Type II' },
               { icon: Shield, label: 'FedRAMP Ready' },
@@ -320,9 +300,9 @@ export default function LandingPage() {
             ].map((badge, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-xs text-muted-foreground"
               >
-                <badge.icon className="w-4 h-4" />
+                <badge.icon className="w-3.5 h-3.5" />
                 {badge.label}
               </div>
             ))}
@@ -330,52 +310,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Stop waste before it stops your mission
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            Join government agencies and Fortune 500 companies using WasteWatch
-            to protect their budgets.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <button
-              onClick={handleTryDemo}
-              disabled={loading}
-              className="w-full sm:w-auto h-12 px-8 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Loading Demo...
-                </>
-              ) : (
-                <>
-                  Try Live Demo
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-            <button
-              onClick={() => router.push('/onboarding')}
-              className="w-full sm:w-auto h-12 px-8 border border-border text-foreground font-semibold rounded-lg hover:bg-accent transition-colors cursor-pointer"
-            >
-              Request Demo
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-border py-8 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-sm text-muted-foreground">
+      <footer className="border-t border-border py-6 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            <span>WasteWatch</span>
+            <Eye className="w-3.5 h-3.5" />
+            <span>{APP_NAME}</span>
           </div>
-          <p>&copy; {new Date().getFullYear()} WasteWatch. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
         </div>
       </footer>
     </div>

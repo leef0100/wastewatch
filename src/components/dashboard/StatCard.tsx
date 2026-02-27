@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -25,7 +24,7 @@ function formatValue(value: number, fmt: string): string {
   return value.toLocaleString();
 }
 
-export function StatCard({ title, value, format: fmt, change, changeLabel, accentColor = 'default', delay = 0 }: Props) {
+export function StatCard({ title, value, format: fmt, change, changeLabel, accentColor = 'default' }: Props) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -59,12 +58,7 @@ export function StatCard({ title, value, format: fmt, change, changeLabel, accen
     : isPositiveChange ? 'text-waste' : 'text-savings';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
-      className="p-6 rounded-xl bg-card border border-border hover:border-primary/20 transition-colors"
-    >
+    <div className="p-5 rounded-md bg-card border border-border">
       <p className="text-sm text-muted-foreground font-medium mb-2">{title}</p>
       <div className="flex items-end justify-between">
         <span className={cn('text-3xl font-bold font-data', colorMap[accentColor])}>
@@ -80,6 +74,6 @@ export function StatCard({ title, value, format: fmt, change, changeLabel, accen
           {changeLabel && <span className="text-muted-foreground ml-1">{changeLabel}</span>}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

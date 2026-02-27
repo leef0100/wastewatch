@@ -63,7 +63,7 @@ export function SpendingByDepartmentChart({ departments, transactions, fiscalYea
           contentStyle={{
             backgroundColor: 'var(--card)',
             border: '1px solid var(--border)',
-            borderRadius: '8px',
+            borderRadius: '4px',
             fontSize: '13px',
           }}
           formatter={(value, name) => [formatCurrency(Number(value)), name === 'actual' ? 'Actual Spend' : 'Budget']}

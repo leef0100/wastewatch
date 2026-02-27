@@ -12,12 +12,12 @@ const COLORS = [
   'var(--savings)',
   'var(--warning-accent)',
   'var(--waste)',
-  '#8B5CF6',
-  '#06B6D4',
-  '#F97316',
-  '#EC4899',
-  '#84CC16',
-  '#14B8A6',
+  '#2563EB',
+  '#0891B2',
+  '#6B7B8D',
+  '#D97706',
+  '#059669',
+  '#1B3A5C',
 ];
 
 function formatCurrency(value: number): string {
@@ -58,7 +58,7 @@ export function CategoryBreakdownChart({ transactions }: Props) {
           contentStyle={{
             backgroundColor: 'var(--card)',
             border: '1px solid var(--border)',
-            borderRadius: '8px',
+            borderRadius: '4px',
             fontSize: '13px',
           }}
           formatter={(value) => [formatCurrency(Number(value))]}

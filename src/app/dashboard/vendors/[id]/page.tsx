@@ -52,7 +52,7 @@ export default function VendorDetailPage() {
   return (
     <div className="space-y-6">
       <button onClick={() => router.back()} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-4 h-4" /> Back to vendors</button>
-      <div><div className="flex items-center gap-2"><h1 className="text-2xl font-bold">{vendor.name}</h1>{isGhost && <Badge variant="destructive">Ghost Vendor</Badge>}</div>
+      <div><div className="flex items-center gap-2"><h1 className="font-heading text-2xl font-bold">{vendor.name}</h1>{isGhost && <Badge variant="destructive">Ghost Vendor</Badge>}</div>
         <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-muted-foreground">
           {vendor.address && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {vendor.address}</span>}
           {vendor.contactEmail && <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {vendor.contactEmail}</span>}

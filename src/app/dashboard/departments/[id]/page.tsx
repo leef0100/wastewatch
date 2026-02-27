@@ -57,7 +57,7 @@ export default function DepartmentDetailPage() {
       <button onClick={() => router.back()} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-4 h-4" /> Back to departments</button>
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-lg bg-primary/10"><Building2 className="w-5 h-5 text-primary" /></div>
-        <div><h1 className="text-2xl font-bold">{dept.name}</h1><p className="text-muted-foreground text-sm">{dept.headcount} employees</p></div>
+        <div><h1 className="font-heading text-2xl font-bold">{dept.name}</h1><p className="text-muted-foreground text-sm">{dept.headcount} employees</p></div>
         {deptFlags.length > 0 && <Badge variant="destructive" className="ml-2"><AlertTriangle className="w-3 h-3 mr-1" /> {deptFlags.length} flags</Badge>}
       </div>
 

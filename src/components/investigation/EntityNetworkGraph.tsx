@@ -29,11 +29,11 @@ interface SimLink extends d3.SimulationLinkDatum<SimNode> {
 }
 
 const TYPE_COLORS: Record<Entity['type'], string> = {
-  provider: '#6366F1',
-  shell_company: '#EF4444',
-  individual: '#F59E0B',
-  government_entity: '#3B82F6',
-  bank_account: '#8B5CF6',
+  provider: '#1B3A5C',
+  shell_company: '#DC2626',
+  individual: '#B8860B',
+  government_entity: '#2563EB',
+  bank_account: '#6B7B8D',
 };
 
 const TYPE_LABELS: Record<Entity['type'], string> = {
@@ -45,12 +45,12 @@ const TYPE_LABELS: Record<Entity['type'], string> = {
 };
 
 const LINK_COLORS: Record<EntityRelationship['type'], string> = {
-  billing: '#3B82F6',
-  payment: '#10B981',
-  kickback: '#EF4444',
-  referral: '#F59E0B',
-  ownership: '#8B5CF6',
-  employment: '#6B7280',
+  billing: '#1B3A5C',
+  payment: '#059669',
+  kickback: '#DC2626',
+  referral: '#B8860B',
+  ownership: '#2563EB',
+  employment: '#6B7B8D',
 };
 
 function formatCurrency(value: number): string {
@@ -313,7 +313,7 @@ export function EntityNetworkGraph({ entities, relationships, onEntityClick, onR
   }, [entities, relationships, dimensions, onEntityClick, onRelationshipClick]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[600px] bg-background rounded-xl border border-border overflow-hidden">
+    <div ref={containerRef} className="relative w-full h-[600px] bg-background rounded-md border border-border overflow-hidden">
       <svg
         ref={svgRef}
         width={dimensions.width}

@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2,
   Upload,
@@ -142,12 +141,12 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
               <Eye className="w-4 h-4 text-primary-foreground" />
             </div>
             <span className="font-semibold text-lg">WasteWatch</span>
           </div>
-          <h1 className="text-2xl font-bold mb-1">Set up your organization</h1>
+          <h1 className="font-heading text-2xl font-bold mb-1">Set up your organization</h1>
           <p className="text-muted-foreground text-sm">
             Get started in under a minute
           </p>
@@ -159,7 +158,7 @@ export default function OnboardingPage() {
             <div key={s.id} className="flex items-center gap-2">
               <div
                 className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-sm text-sm font-medium transition-colors',
                   step === s.id
                     ? 'bg-primary text-primary-foreground'
                     : step > s.id
@@ -182,14 +181,9 @@ export default function OnboardingPage() {
         </div>
 
         {/* Step content */}
-        <AnimatePresence mode="wait">
+        <div>
           {step === 1 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
+            <div>
               <Card>
                 <CardContent className="p-6 space-y-4">
                   <div>
@@ -246,16 +240,11 @@ export default function OnboardingPage() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {step === 2 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
+            <div>
               <Card>
                 <CardContent className="p-6">
                   <p className="text-sm text-muted-foreground mb-4">
@@ -287,16 +276,11 @@ export default function OnboardingPage() {
                   </button>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
+            <div>
               <div className="space-y-4">
                 {/* Demo data option */}
                 <Card
@@ -307,7 +291,7 @@ export default function OnboardingPage() {
                   onClick={() => setImportMethod('demo')}
                 >
                   <CardContent className="p-5 flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
+                    <div className="p-3 rounded-md bg-primary/10">
                       <Sparkles className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1">
@@ -332,7 +316,7 @@ export default function OnboardingPage() {
                 >
                   <CardContent className="p-5">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="p-3 rounded-lg bg-muted">
+                      <div className="p-3 rounded-md bg-muted">
                         <FileSpreadsheet className="w-5 h-5 text-muted-foreground" />
                       </div>
                       <div>
@@ -344,7 +328,7 @@ export default function OnboardingPage() {
                     </div>
                     {importMethod === 'file' && (
                       <div
-                        className="border-2 border-dashed border-border rounded-lg p-8 text-center"
+                        className="border-2 border-dashed border-border rounded-md p-8 text-center"
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
                       >
@@ -360,9 +344,9 @@ export default function OnboardingPage() {
                   </CardContent>
                 </Card>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
 
         {/* Navigation */}
         <div className="flex items-center justify-between mt-6">
@@ -387,21 +371,21 @@ export default function OnboardingPage() {
             {step < 3 ? (
               <button
                 onClick={() => setStep(step + 1)}
-                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 Next <ArrowRight className="w-4 h-4" />
               </button>
             ) : importMethod === 'demo' ? (
               <button
                 onClick={handleDemoLoad}
-                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 <Sparkles className="w-4 h-4" /> Load Demo & Explore
               </button>
             ) : (
               <button
                 onClick={handleFinishSetup}
-                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1 h-10 px-6 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 Finish Setup <ArrowRight className="w-4 h-4" />
               </button>

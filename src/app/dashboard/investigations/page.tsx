@@ -2,17 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/stores/useStore';
-import { motion } from 'framer-motion';
 import {
-  Search,
   Shield,
-  AlertTriangle,
   DollarSign,
   Calendar,
   ChevronRight,
   FileText,
   Users,
   Scale,
+  AlertTriangle,
 } from 'lucide-react';
 
 const STATUS_STYLES: Record<string, string> = {
@@ -52,7 +50,7 @@ export default function InvestigationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Investigations</h1>
+        <h1 className="font-heading text-2xl font-bold">Investigations</h1>
         <p className="text-muted-foreground mt-1">
           Active fraud investigations with AI-powered analysis and evidence management
         </p>
@@ -66,32 +64,26 @@ export default function InvestigationsPage() {
           { label: 'Entities Under Investigation', value: totalEntities.toString(), icon: Users, color: 'text-warning-accent' },
           { label: 'Evidence Documents', value: totalDocuments.toString(), icon: FileText, color: 'text-savings' },
         ].map((card, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-card border border-border rounded-xl p-4"
+            className="bg-card border border-border rounded-md p-4"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">{card.label}</span>
               <card.icon className={`w-4 h-4 ${card.color}`} />
             </div>
             <div className="text-2xl font-bold font-data">{card.value}</div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
       {/* Investigation list */}
       <div className="space-y-4">
-        {investigations.map((investigation, i) => (
-          <motion.div
+        {investigations.map((investigation) => (
+          <div
             key={investigation.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + i * 0.1 }}
             onClick={() => router.push(`/dashboard/investigations/${investigation.id}`)}
-            className="bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-colors cursor-pointer group"
+            className="bg-card border border-border rounded-md p-6 hover:border-primary/30 transition-colors cursor-pointer group"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
@@ -101,10 +93,10 @@ export default function InvestigationsPage() {
                 </div>
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{investigation.summary}</p>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[investigation.status]}`}>
+                  <span className={`px-2.5 py-0.5 rounded-sm text-xs font-medium ${STATUS_STYLES[investigation.status]}`}>
                     {investigation.status.charAt(0).toUpperCase() + investigation.status.slice(1)}
                   </span>
-                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-sm">
                     {TYPE_LABELS[investigation.type]}
                   </span>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -135,7 +127,7 @@ export default function InvestigationsPage() {
                 <ChevronRight className="w-5 h-5 text-muted-foreground mt-3 ml-auto group-hover:text-primary transition-colors" />
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
 
         {investigations.length === 0 && (

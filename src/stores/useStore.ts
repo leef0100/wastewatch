@@ -14,6 +14,15 @@ import type {
   Investigation,
 } from '@/types';
 
+interface TrialSummary {
+  totalTransactions: number;
+  totalSpend: number;
+  flagsDetected: number;
+  estimatedWaste: number;
+  duplicatesFound: number;
+  benfordAnomaly: boolean;
+}
+
 interface AppState {
   // Organization
   organization: Organization | null;
@@ -58,6 +67,12 @@ interface AppState {
   // Demo mode
   isDemo: boolean;
   setIsDemo: (demo: boolean) => void;
+
+  // Trial mode
+  isTrial: boolean;
+  setIsTrial: (trial: boolean) => void;
+  trialSummary: TrialSummary | null;
+  setTrialSummary: (summary: TrialSummary | null) => void;
 
   // Loading
   isLoading: boolean;
@@ -126,7 +141,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   sidebarOpen: true,
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
-  darkMode: true,
+  darkMode: false,
   setDarkMode: (darkMode) => set({ darkMode }),
 
   globalSearch: '',
@@ -134,6 +149,11 @@ export const useStore = create<AppState>((set, get) => ({
 
   isDemo: false,
   setIsDemo: (isDemo) => set({ isDemo }),
+
+  isTrial: false,
+  setIsTrial: (isTrial) => set({ isTrial }),
+  trialSummary: null,
+  setTrialSummary: (trialSummary) => set({ trialSummary }),
 
   isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
@@ -185,6 +205,8 @@ export const useStore = create<AppState>((set, get) => ({
       flags: [],
       investigations: [],
       isDemo: false,
+      isTrial: false,
+      trialSummary: null,
       filters: defaultFilters,
     }),
 }));

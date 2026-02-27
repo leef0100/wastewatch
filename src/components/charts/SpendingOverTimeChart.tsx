@@ -60,7 +60,7 @@ export function SpendingOverTimeChart({ transactions }: Props) {
           contentStyle={{
             backgroundColor: 'var(--card)',
             border: '1px solid var(--border)',
-            borderRadius: '8px',
+            borderRadius: '4px',
             fontSize: '13px',
           }}
           formatter={(value) => [formatCurrency(Number(value)), 'Spend']}

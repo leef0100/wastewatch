@@ -11,7 +11,6 @@ import { TopVendorsTable } from '@/components/dashboard/TopVendorsTable';
 import { RecentFlags } from '@/components/dashboard/RecentFlags';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { motion } from 'framer-motion';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -44,7 +43,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Command Center</h1>
+        <h1 className="font-heading text-2xl font-bold">Command Center</h1>
         <p className="text-muted-foreground text-sm">
           Overview of spending analysis and detected anomalies
         </p>
@@ -57,7 +56,6 @@ export default function DashboardPage() {
           format="currency"
           change={stats.totalSpendChange}
           changeLabel="vs prior"
-          delay={0}
         />
         <StatCard
           title="Waste Detected"
@@ -66,7 +64,6 @@ export default function DashboardPage() {
           change={stats.wasteDetectedChange}
           accentColor="red"
           changeLabel="vs prior"
-          delay={0.1}
         />
         <StatCard
           title="Savings Opportunities"
@@ -75,7 +72,6 @@ export default function DashboardPage() {
           change={stats.savingsChange}
           accentColor="green"
           changeLabel="vs prior"
-          delay={0.2}
         />
         <StatCard
           title="Risk Score"
@@ -84,7 +80,6 @@ export default function DashboardPage() {
           change={stats.riskScoreChange}
           accentColor={stats.riskScore >= 60 ? 'red' : stats.riskScore >= 30 ? 'amber' : 'green'}
           changeLabel="pts"
-          delay={0.3}
         />
       </div>
 
@@ -94,7 +89,7 @@ export default function DashboardPage() {
           <TabsTrigger value="flags">
             Red Flags
             {activeFlags.length > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-waste/20 text-waste text-[10px] font-bold">
+              <span className="ml-1.5 px-1.5 py-0.5 rounded-sm bg-waste/20 text-waste text-[10px] font-bold">
                 {activeFlags.length}
               </span>
             )}
@@ -103,12 +98,7 @@ export default function DashboardPage() {
 
         <TabsContent value="spending" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="lg:col-span-2"
-            >
+            <div className="lg:col-span-2">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Spending by Department</CardTitle>
@@ -121,80 +111,57 @@ export default function DashboardPage() {
                   />
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Category Breakdown</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CategoryBreakdownChart transactions={filteredTransactions} />
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Category Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CategoryBreakdownChart transactions={filteredTransactions} />
+              </CardContent>
+            </Card>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">
-                  Spending Over Time
-                  <span className="text-xs text-muted-foreground font-normal ml-2">
-                    Red dots indicate anomalous months
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SpendingOverTimeChart transactions={transactions} />
-              </CardContent>
-            </Card>
-          </motion.div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">
+                Spending Over Time
+                <span className="text-xs text-muted-foreground font-normal ml-2">
+                  Red dots indicate anomalous months
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SpendingOverTimeChart transactions={transactions} />
+            </CardContent>
+          </Card>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Top 10 Vendors</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TopVendorsTable vendors={vendors} flags={flags} />
-              </CardContent>
-            </Card>
-          </motion.div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top 10 Vendors</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TopVendorsTable vendors={vendors} flags={flags} />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="flags" className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <Card>
-              <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-base">Recent Flags & Anomalies</CardTitle>
-                <button
-                  onClick={() => router.push('/dashboard/flags')}
-                  className="text-xs text-primary hover:underline font-medium"
-                >
-                  View all flags
-                </button>
-              </CardHeader>
-              <CardContent>
-                <RecentFlags flags={flags} limit={10} />
-              </CardContent>
-            </Card>
-          </motion.div>
+          <Card>
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="text-base">Recent Flags & Anomalies</CardTitle>
+              <button
+                onClick={() => router.push('/dashboard/flags')}
+                className="text-xs text-primary hover:underline font-medium"
+              >
+                View all flags
+              </button>
+            </CardHeader>
+            <CardContent>
+              <RecentFlags flags={flags} limit={10} />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

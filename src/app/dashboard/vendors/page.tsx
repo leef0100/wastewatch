@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
 import { Search, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -44,7 +43,7 @@ export default function VendorsPage() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold">Vendors & Contracts</h1><p className="text-muted-foreground text-sm">{vendors.length} vendors — {contracts.length} contracts tracked</p></div>
+      <div><h1 className="font-heading text-2xl font-bold">Vendors & Contracts</h1><p className="text-muted-foreground text-sm">{vendors.length} vendors — {contracts.length} contracts tracked</p></div>
 
       <Tabs defaultValue="vendors" className="space-y-4">
         <TabsList><TabsTrigger value="vendors">Vendor Directory</TabsTrigger><TabsTrigger value="contracts">Contracts</TabsTrigger></TabsList>
@@ -60,14 +59,14 @@ export default function VendorsPage() {
                   const riskColor = vendor.riskScore >= 60 ? 'bg-waste/20 text-waste' : vendor.riskScore >= 30 ? 'bg-warning-accent/20 text-warning-accent' : 'bg-savings/20 text-savings';
                   const isGhost = !vendor.website && !vendor.contactEmail;
                   return (
-                    <motion.tr key={vendor.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.01 }} className={cn('border-b border-border/50 cursor-pointer hover:bg-accent/50 transition-colors', i % 2 === 0 && 'bg-muted/30', isGhost && 'border-l-2 border-l-waste')} onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
+                    <tr key={vendor.id} className={cn('border-b border-border/50 cursor-pointer hover:bg-accent/50 transition-colors', i % 2 === 0 && 'bg-muted/30', isGhost && 'border-l-2 border-l-waste')} onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
                       <td className="py-3 px-4"><div className="flex items-center gap-2"><span className="font-medium">{vendor.name}</span>{isGhost && <Badge variant="destructive" className="text-[10px]">Ghost</Badge>}</div></td>
                       <td className="py-3 px-4 text-muted-foreground text-xs max-w-[200px] truncate">{vendor.address || '—'}</td>
                       <td className="py-3 px-4 text-right font-data">{formatCurrency(vendor.totalPaid)}</td>
                       <td className="py-3 px-4 text-right font-data">{vendor.transactionCount}</td>
                       <td className="py-3 px-4 text-center"><Badge variant="secondary" className={cn('text-xs', riskColor)}>{vendor.riskScore}</Badge></td>
                       <td className="py-3 px-4 text-center">{vendorFlags.length > 0 ? <Badge variant="destructive" className="text-xs">{vendorFlags.length}</Badge> : <span className="text-muted-foreground">—</span>}</td>
-                    </motion.tr>
+                    </tr>
                   );
                 })}
               </tbody>

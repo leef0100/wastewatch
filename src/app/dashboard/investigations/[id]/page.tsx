@@ -205,7 +205,7 @@ export default function InvestigationDetailPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
-                  className="bg-card border border-border rounded-xl p-5"
+                  className="bg-card border border-border rounded-md p-5"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -313,7 +313,7 @@ export default function InvestigationDetailPage() {
               {/* Document detail */}
               <div className="lg:col-span-2">
                 {selectedDoc ? (
-                  <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                  <div className="bg-card border border-border rounded-md p-5 space-y-4">
                     <div>
                       <h3 className="font-semibold text-lg">{selectedDoc.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{selectedDoc.summary}</p>
@@ -360,7 +360,7 @@ export default function InvestigationDetailPage() {
                                     <ChevronRight className="w-4 h-4 shrink-0" />
                                   )}
                                   <span className="text-xs font-medium uppercase">{finding.category}</span>
-                                  <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                                  <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-sm font-medium ${
                                     finding.severity === 'critical' ? 'bg-waste/20' : 'bg-warning-accent/20'
                                   }`}>
                                     {finding.severity}
@@ -417,7 +417,7 @@ export default function InvestigationDetailPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-64 bg-card border border-border rounded-xl text-muted-foreground">
+                  <div className="flex items-center justify-center h-64 bg-card border border-border rounded-md text-muted-foreground">
                     <div className="text-center">
                       <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" />
                       <p className="text-sm">Select a document to view AI analysis</p>
@@ -440,7 +440,7 @@ export default function InvestigationDetailPage() {
             {investigation.complaint && complaintReady ? (
               <div className="space-y-6">
                 {/* Complaint header */}
-                <div className="bg-card border border-border rounded-xl p-6">
+                <div className="bg-card border border-border rounded-md p-6">
                   <div className="text-center mb-6">
                     <p className="text-xs text-muted-foreground uppercase tracking-wider">United States District Court</p>
                     <p className="text-sm font-semibold">{investigation.complaint.jurisdiction}</p>
@@ -481,7 +481,7 @@ export default function InvestigationDetailPage() {
                 </div>
 
                 {/* Counts */}
-                <div className="bg-card border border-border rounded-xl p-6">
+                <div className="bg-card border border-border rounded-md p-6">
                   <h3 className="font-semibold text-lg mb-4">Counts</h3>
                   <div className="space-y-4">
                     {investigation.complaint.counts.map((count) => (
@@ -500,7 +500,7 @@ export default function InvestigationDetailPage() {
                 </div>
 
                 {/* Factual Allegations */}
-                <div className="bg-card border border-border rounded-xl p-6">
+                <div className="bg-card border border-border rounded-md p-6">
                   <h3 className="font-semibold text-lg mb-4">Factual Allegations</h3>
                   <div className="space-y-4">
                     {investigation.complaint.factualAllegations.map((allegation, i) => (
@@ -616,15 +616,12 @@ export default function InvestigationDetailPage() {
                       milestone: 'bg-muted-foreground',
                     };
                     return (
-                      <motion.div
+                      <div
                         key={event.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
                         className="relative"
                       >
-                        <div className={`absolute -left-5 top-1.5 w-2.5 h-2.5 rounded-full ${typeColors[event.type]} ring-4 ring-background`} />
-                        <div className="bg-card border border-border rounded-lg p-4">
+                        <div className={`absolute -left-5 top-1.5 w-2.5 h-2.5 rounded-sm ${typeColors[event.type]} ring-4 ring-background`} />
+                        <div className="bg-card border border-border rounded-md p-4">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs font-data text-muted-foreground">
                               {new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
@@ -642,7 +639,7 @@ export default function InvestigationDetailPage() {
                           <h4 className="font-semibold text-sm">{event.title}</h4>
                           <p className="text-xs text-muted-foreground mt-1">{event.description}</p>
                         </div>
-                      </motion.div>
+                      </div>
                     );
                   })}
               </div>

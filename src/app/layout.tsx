@@ -4,9 +4,9 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'WasteWatch — Enterprise Waste & Fraud Detection',
+  title: 'WasteWatch — Government-Grade Fraud Detection & Waste Analysis',
   description:
-    'Identify wasteful spending, flag anomalies, and optimize budgets. Enterprise-grade waste detection made simple.',
+    'Upload financial data. Detect fraud, waste, and anomalies automatically. Government-grade analysis powered by statistical forensics.',
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
         <ThemeProvider>
           {children}
