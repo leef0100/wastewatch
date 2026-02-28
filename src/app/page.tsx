@@ -271,7 +271,7 @@ export default function LandingPage() {
             <button
               onClick={handleTryDemo}
               disabled={loading}
-              className="h-10 px-6 border border-border text-foreground font-medium rounded-md hover:bg-accent transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-70"
+              className="h-10 px-6 border border-border text-foreground font-medium rounded-md hover:bg-secondary transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-70"
             >
               {loading ? (
                 <>

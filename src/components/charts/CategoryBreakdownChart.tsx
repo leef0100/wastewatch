@@ -1,6 +1,6 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { Transaction } from '@/types';
 
 interface Props {
@@ -14,65 +14,22 @@ interface CategoryDataPoint {
 }
 
 const COLORS = [
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
+  '#1d6ce0',
+  '#c4161c',
+  '#0a7b3e',
+  '#b47a0a',
+  '#7c3aed',
+  '#0891b2',
+  '#d946ef',
+  '#ea580c',
+  '#4f46e5',
+  '#059669',
 ];
 
 function formatCurrency(value: number): string {
   if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
   if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
-}
-
-interface CustomLegendEntry {
-  value: string;
-  color: string;
-}
-
-function renderCustomLegend(props: { payload?: CustomLegendEntry[] }, data: CategoryDataPoint[]) {
-  const { payload } = props;
-  if (!payload) return null;
-
-  return (
-    <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '11px' }}>
-      {payload.map((entry, index) => {
-        const item = data.find((d) => d.name === entry.value);
-        return (
-          <li
-            key={`legend-${index}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '4px',
-              color: 'var(--foreground)',
-            }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: entry.color,
-                flexShrink: 0,
-              }}
-            />
-            <span style={{ fontWeight: 500 }}>{entry.value}</span>
-            <span style={{ color: 'var(--muted-foreground)' }}>({item?.percentage}%)</span>
-          </li>
-        );
-      })}
-    </ul>
-  );
 }
 
 export function CategoryBreakdownChart({ transactions }: Props) {
@@ -85,40 +42,56 @@ export function CategoryBreakdownChart({ transactions }: Props) {
   const data: CategoryDataPoint[] = Array.from(categoryTotals.entries())
     .map(([name, value]) => ({ name, value, percentage: ((value / total) * 100).toFixed(1) }))
     .sort((a, b) => b.value - a.value)
-    .slice(0, 10);
+    .slice(0, 8);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={60}
-          outerRadius={100}
-          paddingAngle={2}
-          dataKey="value"
-          cornerRadius={4}
-          isAnimationActive={true}
-          animationDuration={800}
-        >
-          {data.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip
-          contentStyle={{
-            backgroundColor: 'var(--card)',
-            border: '1px solid var(--border)',
-            borderRadius: '8px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.05)',
-            padding: '12px 16px',
-            fontSize: '13px',
-          }}
-          formatter={(value) => [formatCurrency(Number(value))]}
-        />
-        <Legend content={(props) => renderCustomLegend(props as { payload?: CustomLegendEntry[] }, data)} />
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="flex flex-col items-center gap-4">
+      {/* Donut chart */}
+      <ResponsiveContainer width="100%" height={220}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={55}
+            outerRadius={90}
+            paddingAngle={2}
+            dataKey="value"
+            cornerRadius={3}
+            isAnimationActive={true}
+            animationDuration={800}
+          >
+            {data.map((_, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              backgroundColor: 'var(--card)',
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.05)',
+              padding: '8px 12px',
+              fontSize: '12px',
+            }}
+            formatter={(value) => [formatCurrency(Number(value))]}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+
+      {/* Legend — separate from chart */}
+      <div className="w-full grid grid-cols-2 gap-x-4 gap-y-1.5 px-1">
+        {data.map((item, index) => (
+          <div key={item.name} className="flex items-center gap-2 min-w-0">
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+            />
+            <span className="text-xs text-foreground truncate">{item.name}</span>
+            <span className="text-[10px] text-muted-foreground shrink-0 ml-auto">{item.percentage}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

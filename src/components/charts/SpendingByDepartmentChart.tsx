@@ -59,17 +59,17 @@ export function SpendingByDepartmentChart({ departments, transactions, fiscalYea
           }
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e8ebf0" />
         <XAxis
           type="number"
           tickFormatter={formatCurrency}
-          tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+          tick={{ fontSize: 11, fill: '#637083' }}
         />
         <YAxis
           dataKey="name"
           type="category"
           width={150}
-          tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+          tick={{ fontSize: 11, fill: '#637083' }}
         />
         <Tooltip
           contentStyle={{
@@ -92,15 +92,15 @@ export function SpendingByDepartmentChart({ departments, transactions, fiscalYea
         />
         <Bar
           dataKey="allocated"
-          fill="var(--border)"
-          opacity={0.4}
+          fill="#d2d7e0"
+          opacity={0.5}
           radius={[0, 4, 4, 0]}
           isAnimationActive={true}
           animationDuration={800}
         />
         <Bar
           dataKey="actual"
-          fill="var(--accent)"
+          fill="#1d6ce0"
           radius={[0, 4, 4, 0]}
           cursor="pointer"
           isAnimationActive={true}

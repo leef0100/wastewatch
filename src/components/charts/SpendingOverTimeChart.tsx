@@ -55,18 +55,18 @@ export function SpendingOverTimeChart({ transactions }: Props) {
       <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
+            <stop offset="5%" stopColor="#1d6ce0" stopOpacity={0.15} />
+            <stop offset="95%" stopColor="#1d6ce0" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e8ebf0" />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+          tick={{ fontSize: 11, fill: '#637083' }}
         />
         <YAxis
           tickFormatter={formatCurrency}
-          tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+          tick={{ fontSize: 11, fill: '#637083' }}
         />
         <Tooltip
           contentStyle={{
@@ -82,10 +82,10 @@ export function SpendingOverTimeChart({ transactions }: Props) {
         <Area
           type="monotone"
           dataKey="amount"
-          stroke="var(--accent)"
+          stroke="#1d6ce0"
           fillOpacity={1}
           fill="url(#colorSpend)"
-          strokeWidth={2.5}
+          strokeWidth={2}
           isAnimationActive={true}
           animationDuration={800}
         />
@@ -95,9 +95,8 @@ export function SpendingOverTimeChart({ transactions }: Props) {
             x={a.month}
             y={a.amount}
             r={5}
-            fill="var(--severity-critical)"
-            stroke="var(--severity-critical)"
-            style={{ filter: 'drop-shadow(0 0 4px var(--severity-critical))' }}
+            fill="#c4161c"
+            stroke="#c4161c"
           />
         ))}
       </AreaChart>
